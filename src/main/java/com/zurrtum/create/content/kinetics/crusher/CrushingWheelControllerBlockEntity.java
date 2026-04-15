@@ -28,7 +28,7 @@ import net.minecraft.world.Clearable;
 import net.minecraft.world.Containers;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.livingblock.LivingBlock;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackTemplate;
@@ -190,10 +190,12 @@ public class CrushingWheelControllerBlockEntity extends SmartBlockEntity impleme
                 if (stack.isEmpty()) {
                     continue;
                 }
-                ItemEntity entityIn = new ItemEntity(level, outPos.x, outPos.y, outPos.z, stack);
-                entityIn.setDeltaMovement(outSpeed);
-                AllSynchedDatas.BYPASS_CRUSHING_WHEEL.set(entityIn, Optional.of(worldPosition));
-                level.addFreshEntity(entityIn);
+                BlockPos pos = BlockPos.containing(outPos);
+                LivingBlock entityIn = LivingBlock.createAt(level, pos, stack);
+                if (entityIn != null) {
+                    entityIn.setDeltaMovement(outSpeed);
+                    AllSynchedDatas.BYPASS_CRUSHING_WHEEL.set(entityIn, Optional.of(worldPosition));
+                }
             }
             inventory.clearContent();
             level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), 2 | 16);
@@ -231,7 +233,7 @@ public class CrushingWheelControllerBlockEntity extends SmartBlockEntity impleme
             return;
         }
 
-        if (!(processingEntity instanceof ItemEntity itemEntity)) {
+        if (!(processingEntity instanceof LivingBlock itemEntity)) {
             Vec3 entityOutPos = outPos.add(
                 facing.getAxis() == Axis.X ? .5f * offset : 0f,
                 facing.getAxis() == Axis.Y ? .5f * offset : 0f,
@@ -256,7 +258,7 @@ public class CrushingWheelControllerBlockEntity extends SmartBlockEntity impleme
             return;
         }
 
-        itemEntity.setPickUpDelay(20);
+        // setPickUpDelay method removed in LivingBlock
         if (facing.getAxis() == Axis.Y) {
             if (processingEntity.getY() * -offset < (centerPos.y - .25f) * -offset) {
                 intakeItem(itemEntity);
@@ -272,9 +274,9 @@ public class CrushingWheelControllerBlockEntity extends SmartBlockEntity impleme
         }
     }
 
-    private void intakeItem(ItemEntity itemEntity) {
+    private void intakeItem(LivingBlock itemEntity) {
         inventory.clearContent();
-        inventory.setItem(0, itemEntity.getItem().copy());
+        inventory.setItem(0, itemEntity.getItemStack().copy());
         itemInserted(inventory.getItem(0));
         itemEntity.discard();
         level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), 2 | 16);

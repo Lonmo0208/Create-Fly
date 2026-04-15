@@ -8,7 +8,7 @@ import com.zurrtum.create.content.contraptions.glue.SuperGlueEntity;
 import com.zurrtum.create.content.equipment.blueprint.BlueprintEntity;
 import com.zurrtum.create.content.equipment.potatoCannon.PotatoProjectileEntity;
 import com.zurrtum.create.content.logistics.box.PackageEntity;
-import com.zurrtum.create.content.logistics.depot.EjectorItemEntity;
+import com.zurrtum.create.content.logistics.depot.EjectorLivingBlock;
 import com.zurrtum.create.content.trains.entity.CarriageContraptionEntity;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -26,9 +26,9 @@ import static com.zurrtum.create.Create.MOD_ID;
 
 public class AllEntityTypes {
     public static final Set<EntityType<?>> NOT_SEND_VELOCITY = new HashSet<>();
-    public static final EntityType<EjectorItemEntity> EJECTOR_ITEM = register(
+    public static final EntityType<EjectorLivingBlock> EJECTOR_ITEM = register(
         "ejector_item",
-        EntityType.Builder.<EjectorItemEntity>of(EjectorItemEntity::new, MobCategory.MISC).noLootTable()
+        EntityType.Builder.<EjectorLivingBlock>of(EjectorLivingBlock::new, MobCategory.MISC).noLootTable()
             .sized(0.25F, 0.25F).eyeHeight(0.2125F).clientTrackingRange(6).updateInterval(20)
     );
     public static final EntityType<OrientedContraptionEntity> ORIENTED_CONTRAPTION = register(

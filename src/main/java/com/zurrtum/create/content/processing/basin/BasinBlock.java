@@ -26,7 +26,7 @@ import net.minecraft.world.Container;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.livingblock.LivingBlock;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -193,7 +193,7 @@ public class BasinBlock extends Block implements IBE<BasinBlockEntity>, IWrencha
         if (!worldIn.getBlockState(entityIn.blockPosition()).is(this)) {
             return;
         }
-        if (!(entityIn instanceof ItemEntity itemEntity)) {
+        if (!(entityIn instanceof LivingBlock itemEntity)) {
             return;
         }
         if (!entityIn.isAlive()) {
@@ -201,14 +201,14 @@ public class BasinBlock extends Block implements IBE<BasinBlockEntity>, IWrencha
         }
         withBlockEntityDo(
             worldIn, entityIn.blockPosition(), be -> {
-                ItemStack stack = itemEntity.getItem();
+                ItemStack stack = itemEntity.getItemStack();
                 int count = stack.getCount();
                 int insert = be.itemCapability.insert(stack);
                 if (insert == count) {
                     itemEntity.discard();
                 } else if (insert != 0) {
                     stack.shrink(insert);
-                    itemEntity.setItem(stack);
+                    itemEntity.setItemStack(stack);
                 }
             }
         );
@@ -226,7 +226,7 @@ public class BasinBlock extends Block implements IBE<BasinBlockEntity>, IWrencha
 
     @Override
     public VoxelShape getCollisionShape(BlockState state, BlockGetter reader, BlockPos pos, CollisionContext ctx) {
-        if (ctx instanceof EntityCollisionContext entityShapeContext && entityShapeContext.getEntity() instanceof ItemEntity) {
+        if (ctx instanceof EntityCollisionContext entityShapeContext && entityShapeContext.getEntity() instanceof LivingBlock) {
             return AllShapes.BASIN_COLLISION_SHAPE;
         }
         return getShape(state, reader, pos, ctx);

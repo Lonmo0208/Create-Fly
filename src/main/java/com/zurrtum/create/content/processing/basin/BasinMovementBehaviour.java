@@ -3,11 +3,12 @@ package com.zurrtum.create.content.processing.basin;
 import com.zurrtum.create.AllClientHandle;
 import com.zurrtum.create.api.behaviour.movement.MovementBehaviour;
 import com.zurrtum.create.content.contraptions.behaviour.MovementContext;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.RegistryOps;
-import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.livingblock.LivingBlock;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -54,9 +55,11 @@ public class BasinMovementBehaviour extends MovementBehaviour {
         Vec3 velocity = facingVec.scale(0.5);
         Level world = context.world;
         for (ItemStack stack : inventory) {
-            ItemEntity item = new ItemEntity(world, context.position.x, context.position.y, context.position.z, stack);
-            item.setDeltaMovement(velocity);
-            world.addFreshEntity(item);
+            BlockPos pos = BlockPos.containing(context.position.x, context.position.y, context.position.z);
+            LivingBlock item = LivingBlock.createAt(world, pos, stack);
+            if (item != null) {
+                item.setDeltaMovement(velocity);
+            }
         }
         context.blockEntityData.remove("Inventory");
         // FIXME: Why are we setting client-side data here?

@@ -10,7 +10,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.livingblock.LivingBlock;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.ItemContainerContents;
@@ -173,12 +173,12 @@ public class LecternControllerBlockEntity extends SmartBlockEntity {
         }
 
         Direction dir = state.getValue(LecternControllerBlock.FACING);
-        double x = worldPosition.getX() + 0.5 + 0.25 * dir.getStepX();
-        double y = worldPosition.getY() + 1;
-        double z = worldPosition.getZ() + 0.5 + 0.25 * dir.getStepZ();
-        ItemEntity itementity = new ItemEntity(level, x, y, z, createLinkedController());
-        itementity.setDefaultPickUpDelay();
-        level.addFreshEntity(itementity);
+        BlockPos pos = BlockPos.containing(
+            worldPosition.getX() + 0.5 + 0.25 * dir.getStepX(),
+            worldPosition.getY() + 1,
+            worldPosition.getZ() + 0.5 + 0.25 * dir.getStepZ()
+        );
+        LivingBlock.createAt(level, pos, createLinkedController());
         controllerData = ItemContainerContents.EMPTY;
     }
 

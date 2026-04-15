@@ -16,7 +16,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.InsideBlockEffectApplier;
-import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.livingblock.LivingBlock;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
@@ -61,7 +61,7 @@ public class DrillBlock extends DirectionalKineticBlock implements IBE<DrillBloc
         InsideBlockEffectApplier handler,
         boolean bl
     ) {
-        if (entityIn instanceof ItemEntity) {
+        if (entityIn instanceof LivingBlock) {
             return;
         }
         if (!new AABB(pos).deflate(.1f).intersects(entityIn.getBoundingBox())) {

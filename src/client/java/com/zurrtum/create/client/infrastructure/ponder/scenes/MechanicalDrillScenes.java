@@ -11,7 +11,7 @@ import com.zurrtum.create.client.ponder.api.scene.Selection;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.livingblock.LivingBlock;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
@@ -49,7 +49,7 @@ public class MechanicalDrillScenes {
         }
 
         scene.world().hideSection(util.select().position(breakingPos), Direction.UP);
-        ElementLink<EntityElement> plankEntity = scene.world().createItemEntity(
+        ElementLink<EntityElement> plankEntity = scene.world().createLivingBlock(
             util.vector().centerOf(breakingPos),
             util.vector().of(0, .1f, 0),
             new ItemStack(Items.OAK_PLANKS)
@@ -75,7 +75,7 @@ public class MechanicalDrillScenes {
             }
         }
 
-        scene.world().createItemEntity(
+        scene.world().createLivingBlock(
             util.vector().centerOf(breakingPos),
             util.vector().of(0, .1f, 0),
             new ItemStack(Items.OAK_PLANKS)
@@ -143,10 +143,10 @@ public class MechanicalDrillScenes {
 
         Vec3 m = util.vector().of(-.1, 0, 0);
         ItemStack item = new ItemStack(Items.OAK_PLANKS);
-        scene.world().createItemEntity(util.vector().centerOf(p1), m, item);
-        scene.world().createItemEntity(util.vector().centerOf(p2), m, item);
-        scene.world().createItemEntity(util.vector().centerOf(p3), m, item);
-        scene.world().createItemEntity(util.vector().centerOf(p4), m, item);
+        scene.world().createLivingBlock(util.vector().centerOf(p1), m, item);
+        scene.world().createLivingBlock(util.vector().centerOf(p2), m, item);
+        scene.world().createLivingBlock(util.vector().centerOf(p3), m, item);
+        scene.world().createLivingBlock(util.vector().centerOf(p4), m, item);
 
         scene.world().setKineticSpeed(drills, 16);
         scene.world().moveSection(pistonHead, util.vector().of(-1, 0, 0), 20);
@@ -162,7 +162,7 @@ public class MechanicalDrillScenes {
         scene.idle(40);
 
         scene.world().setBlocks(planks, Blocks.OAK_PLANKS.defaultBlockState(), false);
-        scene.world().modifyEntities(ItemEntity.class, Entity::discard);
+        scene.world().modifyEntities(LivingBlock.class, Entity::discard);
         scene.world().glueBlockOnto(util.grid().at(4, 3, 2), Direction.DOWN, contraption);
 
         scene.overlay().showText(60).attachKeyFrame().placeNearTarget()

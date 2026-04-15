@@ -8,7 +8,7 @@ import com.zurrtum.create.client.content.equipment.blueprint.BlueprintRenderer;
 import com.zurrtum.create.client.content.equipment.potatoCannon.PotatoProjectileRenderer;
 import com.zurrtum.create.client.content.logistics.box.PackageRenderer;
 import com.zurrtum.create.client.content.logistics.box.PackageVisual;
-import com.zurrtum.create.client.content.logistics.depot.EjectorItemEntityRenderer;
+import com.zurrtum.create.client.content.logistics.depot.EjectorLivingBlockRenderer;
 import com.zurrtum.create.client.content.trains.entity.CarriageContraptionEntityRenderer;
 import com.zurrtum.create.client.content.trains.entity.CarriageContraptionVisual;
 import com.zurrtum.create.client.flywheel.lib.visualization.SimpleEntityVisualizer;
@@ -32,7 +32,7 @@ public class AllEntityRenders {
     }
 
     public static void register() {
-        render(AllEntityTypes.EJECTOR_ITEM, EjectorItemEntityRenderer::new);
+        render(AllEntityTypes.EJECTOR_ITEM, EjectorLivingBlockRenderer::new);
         visual(
             AllEntityTypes.ORIENTED_CONTRAPTION,
             OrientedContraptionEntityRenderer::new,

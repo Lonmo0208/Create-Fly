@@ -10,6 +10,8 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import org.jspecify.annotations.Nullable;
 
+import java.util.UUID;
+
 public class CardboardArmorHandler {
     @Nullable
     public static EntityDimensions playerHitboxChangesWhenHidingAsBox(Entity entity) {
@@ -37,8 +39,8 @@ public class CardboardArmorHandler {
 
     public static void playerChangesEquipment(Player player) {
         if (player.getPose() == Pose.CROUCHING && (isCardboardArmor(player.getItemBySlot(EquipmentSlot.HEAD)) || isCardboardArmor(
-            player.getItemBySlot(EquipmentSlot.CHEST)) || isCardboardArmor(player.getItemBySlot(EquipmentSlot.LEGS)) || isCardboardArmor(
-            player.getItemBySlot(EquipmentSlot.FEET)))) {
+                player.getItemBySlot(EquipmentSlot.CHEST)) || isCardboardArmor(player.getItemBySlot(EquipmentSlot.LEGS)) || isCardboardArmor(
+                player.getItemBySlot(EquipmentSlot.FEET)))) {
             player.getEntityData().set(Entity.DATA_POSE, Pose.CROUCHING, true);
         }
     }
@@ -63,9 +65,13 @@ public class CardboardArmorHandler {
         }
 
         if (entity instanceof NeutralMob nMob && entity.level() instanceof ServerLevel sl) {
-            LivingEntity target = EntityReference.getLivingEntity(nMob.getPersistentAngerTarget(), sl);
-            if (testForStealth(target)) {
-                nMob.stopBeingAngry();
+            EntityReference<?> angerTarget = nMob.getPersistentAngerTarget();
+            if (angerTarget != null) {
+                UUID targetUUID = angerTarget.getUUID();
+                Entity targetEntity = sl.getEntity(targetUUID);
+                if (targetEntity instanceof LivingEntity target && testForStealth(target)) {
+                    nMob.stopBeingAngry();
+                }
             }
         }
 

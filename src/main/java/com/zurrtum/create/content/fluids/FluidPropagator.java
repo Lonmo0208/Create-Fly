@@ -216,8 +216,6 @@ public class FluidPropagator {
             return false;
         }
         if (!(connectedState.canBeReplaced() && connectedState.getDestroySpeed(
-            reader,
-            connectedPos
         ) != -1) && !connectedState.hasProperty(BlockStateProperties.WATERLOGGED)) {
             return false;
         }

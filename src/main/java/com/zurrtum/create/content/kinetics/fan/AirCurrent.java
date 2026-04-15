@@ -17,7 +17,7 @@ import net.minecraft.core.Vec3i;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.livingblock.LivingBlock;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
@@ -107,7 +107,7 @@ public class AirCurrent {
                 continue;
             }
 
-            if (entity instanceof ItemEntity itemEntity) {
+            if (entity instanceof LivingBlock itemEntity) {
                 if (world != null && world.isClientSide()) {
                     processingType.spawnProcessingParticles(world, entity.position());
                     continue;

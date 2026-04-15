@@ -16,7 +16,7 @@ import com.zurrtum.create.content.logistics.chute.SmartChuteBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.livingblock.LivingBlock;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
@@ -41,17 +41,17 @@ public class ChuteScenes {
 
         ItemStack stack = new ItemStack(Items.COPPER_BLOCK);
         scene.world()
-            .createItemEntity(util.vector().centerOf(util.grid().at(3, 3, 2)), util.vector().of(0, -0.1, 0), stack);
+            .createLivingBlock(util.vector().centerOf(util.grid().at(3, 3, 2)), util.vector().of(0, -0.1, 0), stack);
         scene.idle(20);
         ElementLink<EntityElement> remove = scene.world()
-            .createItemEntity(util.vector().centerOf(util.grid().at(1, 5, 2)), util.vector().of(0, 0.1, 0), stack);
+            .createLivingBlock(util.vector().centerOf(util.grid().at(1, 5, 2)), util.vector().of(0, 0.1, 0), stack);
         scene.idle(15);
         scene.world().modifyEntity(remove, Entity::discard);
 
         scene.overlay().showText(60).attachKeyFrame().pointAt(util.vector().topOf(util.grid().at(1, 2, 2)))
             .placeNearTarget().text("Chutes can transport items vertically from and to inventories");
         scene.idle(70);
-        scene.world().modifyEntities(ItemEntity.class, Entity::discard);
+        scene.world().modifyEntities(LivingBlock.class, Entity::discard);
         scene.world().moveSection(bottom, util.vector().of(1, 0, 0), 10);
         scene.world().moveSection(top, util.vector().of(-1, 0, 0), 10);
         scene.idle(20);
@@ -119,7 +119,7 @@ public class ChuteScenes {
 
         Direction offset = Direction.NORTH;
         for (int i = 0; i < 3; i++) {
-            remove = scene.world().createItemEntity(
+            remove = scene.world().createLivingBlock(
                 util.vector().centerOf(util.grid().at(2, 6, 3).relative(offset)),
                 util.vector().of(0, 0.1, 0).add(Vec3.atLowerCornerOf(offset.getUnitVec3i()).scale(-.1)),
                 stack

@@ -15,7 +15,7 @@ import net.minecraft.world.Container;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.livingblock.LivingBlock;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
@@ -108,7 +108,7 @@ public class MillstoneBlock extends KineticBlock implements IBE<MillstoneBlockEn
         if (entityIn.level().isClientSide()) {
             return;
         }
-        if (!(entityIn instanceof ItemEntity itemEntity)) {
+        if (!(entityIn instanceof LivingBlock itemEntity)) {
             return;
         }
         if (!entityIn.isAlive()) {
@@ -137,13 +137,13 @@ public class MillstoneBlock extends KineticBlock implements IBE<MillstoneBlockEn
             return;
         }
 
-        ItemStack stack = itemEntity.getItem();
+        ItemStack stack = itemEntity.getItemStack();
         int insert = capability.insert(stack);
         if (insert == stack.getCount()) {
             itemEntity.discard();
         } else if (insert != 0) {
             stack.shrink(insert);
-            itemEntity.setItem(stack);
+            itemEntity.setItemStack(stack);
         }
     }
 

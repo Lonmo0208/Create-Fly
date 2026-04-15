@@ -36,7 +36,7 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
-import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.livingblock.LivingBlock;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -220,7 +220,7 @@ public class FrogAndConveyorScenes {
 
     public static class ChainConveyorParrotElement extends ParrotElementImpl {
 
-        private @Nullable ItemEntity wrench;
+        private @Nullable LivingBlock wrench;
 
         public ChainConveyorParrotElement(Vec3 location, Supplier<? extends ParrotPose> pose) {
             super(location, pose);
@@ -245,8 +245,11 @@ public class FrogAndConveyorScenes {
             }
 
             if (wrench == null) {
-                wrench = new ItemEntity(world, 0, 0, 0, AllItems.WRENCH.getDefaultInstance());
-                wrench.setYRot(wrench.yRotO = 180);
+                BlockPos pos = BlockPos.containing(0, 0, 0);
+                wrench = LivingBlock.createAt(world, pos, AllItems.WRENCH.getDefaultInstance());
+                if (wrench != null) {
+                    wrench.setYRot(wrench.yRotO = 180);
+                }
             }
 
             double lx = Mth.lerp(pt, entity.xo, entity.getX());
@@ -273,7 +276,7 @@ public class FrogAndConveyorScenes {
             itemRenderState.displayContext = ItemDisplayContext.GROUND;
             itemModelManager.appendItemLayers(
                 itemRenderState,
-                wrench.getItem(),
+                wrench.getItemStack(),
                 itemRenderState.displayContext,
                 world,
                 null,

@@ -380,15 +380,15 @@ public class CrafterScenes {
         scene.idle(60);
 
         ElementLink<EntityElement> ingot = scene.world()
-            .createItemEntity(util.vector().centerOf(4, 4, 2), util.vector().of(0, 0.2, 0), iron);
+            .createLivingBlock(util.vector().centerOf(4, 4, 2), util.vector().of(0, 0.2, 0), iron);
         scene.idle(17);
         scene.world().modifyEntity(ingot, Entity::discard);
         scene.world().modifyBlockEntity(util.grid().at(3, 2, 2), type, mct -> mct.getInventory().insert(iron.copy()));
-        ingot = scene.world().createItemEntity(util.vector().centerOf(4, 4, 2), util.vector().of(0, 0.2, 0), iron);
+        ingot = scene.world().createLivingBlock(util.vector().centerOf(4, 4, 2), util.vector().of(0, 0.2, 0), iron);
         scene.idle(17);
         scene.world().modifyEntity(ingot, Entity::discard);
         scene.world().modifyBlockEntity(util.grid().at(2, 1, 2), type, mct -> mct.getInventory().insert(iron.copy()));
-        ingot = scene.world().createItemEntity(util.vector().centerOf(4, 4, 2), util.vector().of(0, 0.2, 0), iron);
+        ingot = scene.world().createLivingBlock(util.vector().centerOf(4, 4, 2), util.vector().of(0, 0.2, 0), iron);
         scene.idle(17);
         scene.world().modifyEntity(ingot, Entity::discard);
         scene.world().modifyBlockEntity(util.grid().at(1, 2, 2), type, mct -> mct.getInventory().insert(iron.copy()));

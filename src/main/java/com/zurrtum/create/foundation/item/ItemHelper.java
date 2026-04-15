@@ -16,7 +16,7 @@ import net.minecraft.world.Container;
 import net.minecraft.world.WorldlyContainer;
 import net.minecraft.world.WorldlyContainerHolder;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.livingblock.LivingBlock;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.ItemContainerContents;
@@ -219,14 +219,14 @@ public class ItemHelper {
         return ItemStack.isSameItemSameComponents(a, b) && a.getCount() + b.getCount() <= a.getMaxStackSize();
     }
 
-    public static ItemStack fromItemEntity(Entity entityIn) {
+    public static ItemStack fromLivingBlock(Entity entityIn) {
         if (!entityIn.isAlive()) {
             return ItemStack.EMPTY;
         }
         if (entityIn instanceof PackageEntity packageEntity) {
             return packageEntity.getBox();
         }
-        return entityIn instanceof ItemEntity itemEntity ? itemEntity.getItem() : ItemStack.EMPTY;
+        return entityIn instanceof LivingBlock itemEntity ? itemEntity.getItemStack() : ItemStack.EMPTY;
     }
 
     public static void fillItemStackHandler(ItemContainerContents contents, ItemStackHandler inv) {

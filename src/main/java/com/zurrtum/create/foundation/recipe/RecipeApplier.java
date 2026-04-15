@@ -4,8 +4,9 @@ import com.zurrtum.create.infrastructure.items.BaseInventory;
 import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenCustomHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectIntPair;
+import net.minecraft.core.BlockPos;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.livingblock.LivingBlock;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.RecipeInput;
@@ -18,18 +19,18 @@ import java.util.List;
 
 public class RecipeApplier {
     public static <T extends RecipeInput> void applyRecipeOn(
-        ItemEntity entity,
+        LivingBlock entity,
         T input,
         CreateRollableRecipe<T> recipe
     ) {
         Level world = entity.level();
-        List<ItemStack> stacks = applyRecipeOn(world.getRandom(), entity.getItem().getCount(), input, recipe);
+        List<ItemStack> stacks = applyRecipeOn(world.getRandom(), entity.getItemStack().getCount(), input, recipe);
         int size = stacks.size();
         if (size == 0) {
             entity.discard();
             return;
         }
-        entity.setItem(stacks.getFirst());
+        entity.setItemStack(stacks.getFirst());
         if (size == 1) {
             return;
         }
@@ -38,9 +39,11 @@ public class RecipeApplier {
         double z = entity.getZ();
         Vec3 velocity = entity.getDeltaMovement();
         for (int i = 1; i < size; i++) {
-            ItemEntity entityIn = new ItemEntity(world, x, y, z, stacks.get(i));
-            entityIn.setDeltaMovement(velocity);
-            world.addFreshEntity(entityIn);
+            BlockPos pos = BlockPos.containing(x, y, z);
+            LivingBlock entityIn = LivingBlock.createAt(world, pos, stacks.get(i));
+            if (entityIn != null) {
+                entityIn.setDeltaMovement(velocity);
+            }
         }
     }
 

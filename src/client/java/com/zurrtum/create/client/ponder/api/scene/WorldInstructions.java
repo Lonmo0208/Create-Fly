@@ -80,7 +80,7 @@ public interface WorldInstructions {
 
     ElementLink<EntityElement> createEntity(Function<Level, Entity> factory);
 
-    ElementLink<EntityElement> createItemEntity(Vec3 location, Vec3 motion, ItemStack stack);
+    ElementLink<EntityElement> createLivingBlock(Vec3 location, Vec3 motion, ItemStack stack);
 
     void modifyBlockEntityNBT(Selection selection, Class<? extends BlockEntity> beType, Consumer<CompoundTag> consumer);
 

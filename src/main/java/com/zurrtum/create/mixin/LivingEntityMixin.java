@@ -28,7 +28,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.livingblock.LivingBlock;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -138,20 +138,6 @@ public abstract class LivingEntityMixin extends Entity {
         }
     }
 
-    @WrapOperation(method = "drop(Lnet/minecraft/world/item/ItemStack;ZZ)Lnet/minecraft/world/entity/item/ItemEntity;", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/Level;addFreshEntity(Lnet/minecraft/world/entity/Entity;)Z"))
-    private boolean captureDrops(Level world, Entity entity, Operation<Boolean> original) {
-        if (AllSynchedDatas.CRUSH_DROP.get(this)) {
-            entity.setDeltaMovement(Vec3.ZERO);
-        } else if (world instanceof ServerLevel) {
-            Optional<List<ItemStack>> value = AllSynchedDatas.CAPTURE_DROPS.get(this);
-            if (value.isPresent()) {
-                value.get().add(((ItemEntity) entity).getItem());
-                return true;
-            }
-        }
-        return original.call(world, entity);
-    }
-
     @Inject(method = "dropExperience(Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/world/entity/Entity;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/ExperienceOrb;award(Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/world/phys/Vec3;I)V"), cancellable = true)
     private void onDropExperience(ServerLevel world, Entity attacker, CallbackInfo ci) {
         if (getLastHurtByPlayer() instanceof DeployerPlayer) {
@@ -229,19 +215,5 @@ public abstract class LivingEntityMixin extends Entity {
     @WrapOperation(method = "handleOnClimbable(Lnet/minecraft/world/phys/Vec3;)Lnet/minecraft/world/phys/Vec3;", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/block/state/BlockState;is(Ljava/lang/Object;)Z"))
     private boolean isScaffolding(BlockState state, Object block, Operation<Boolean> original) {
         return original.call(state, block) || state.getBlock() instanceof ScaffoldingControlBlock;
-    }
-
-    @WrapOperation(method = "playBlockFallSound()V", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/block/state/BlockState;getSoundType()Lnet/minecraft/world/level/block/SoundType;"))
-    private SoundType getBlockFallSound(
-        BlockState state,
-        Operation<SoundType> original,
-        @Local(ordinal = 0) int x,
-        @Local(ordinal = 1) int y,
-        @Local(ordinal = 2) int z
-    ) {
-        if (state.getBlock() instanceof SoundControlBlock block) {
-            return block.getSoundGroup(level(), new BlockPos(x, y, z));
-        }
-        return original.call(state);
     }
 }

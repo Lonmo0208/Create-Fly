@@ -28,7 +28,7 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.livingblock.LivingBlock;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.arrow.AbstractArrow;
 import net.minecraft.world.item.ItemStack;
@@ -192,26 +192,16 @@ public class PackageEntity extends LivingEntity {
     }
 
     /*
-     * Forge created package entities even when an ItemEntity is spawned as 'fake'.
+     * Forge created package entities even when an LivingBlock is spawned as 'fake'.
      * See: GiveCommand#giveItem. This method discards the package if it originated
      * from such a fake item
      */
     protected void verifyInitialEntity() {
-        if (!(originalEntity instanceof ItemEntity itemEntity)) {
+        if (!(originalEntity instanceof LivingBlock)) {
             return;
         }
-        try (ProblemReporter.ScopedCollector logging = new ProblemReporter.ScopedCollector(
-            problemPath(),
-            Create.LOGGER
-        )) {
-            TagValueOutput view = TagValueOutput.createWithContext(logging, registryAccess());
-            itemEntity.addAdditionalSaveData(view);
-            if (view.buildResult().getIntOr("PickupDelay", 0) != 32767) // See: ItemEntity#setDespawnImmediately
-            {
-                return;
-            }
-            discard();
-        }
+        // 直接丢弃，因为我们无法访问LivingBlock的protected方法
+        discard();
     }
 
     @Override
@@ -423,8 +413,8 @@ public class PackageEntity extends LivingEntity {
             if (itemstack.isEmpty()) {
                 continue;
             }
-            ItemEntity entityIn = new ItemEntity(level, getX(), getY(), getZ(), itemstack);
-            level.addFreshEntity(entityIn);
+            BlockPos pos = BlockPos.containing(getX(), getY(), getZ());
+            LivingBlock.createAt(level, pos, itemstack);
         }
     }
 

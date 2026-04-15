@@ -141,7 +141,7 @@ public class BlockMovementChecksImpl {
         if (block instanceof AbstractChassisBlock) {
             return true;
         }
-        if (state.getDestroySpeed(world, pos) == -1) {
+        if (state.getDestroySpeed() == -1) {
             return false;
         }
         if (state.is(AllBlockTags.RELOCATION_NOT_SUPPORTED)) {

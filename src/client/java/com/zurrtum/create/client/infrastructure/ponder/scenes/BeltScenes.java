@@ -21,7 +21,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.livingblock.LivingBlock;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -293,7 +293,7 @@ public class BeltScenes {
 
         ItemStack stack = new ItemStack(Items.COPPER_BLOCK);
         ElementLink<EntityElement> item = scene.world()
-            .createItemEntity(util.vector().centerOf(0, 4, 2), util.vector().of(0, 0, 0), stack);
+            .createLivingBlock(util.vector().centerOf(0, 4, 2), util.vector().of(0, 0, 0), stack);
         scene.idle(13);
         scene.world().modifyEntity(item, Entity::discard);
         BlockPos beltEnd = util.grid().at(0, 1, 2);
@@ -310,7 +310,7 @@ public class BeltScenes {
             .text("Moving belts will transport Items and other Entities");
 
         scene.idle(20);
-        item = scene.world().createItemEntity(util.vector().centerOf(0, 4, 2), util.vector().of(0, 0, 0), stack);
+        item = scene.world().createLivingBlock(util.vector().centerOf(0, 4, 2), util.vector().of(0, 0, 0), stack);
         scene.special().movePointOfInterest(util.grid().at(0, 3, 2));
         scene.idle(10);
         scene.special().movePointOfInterest(beltEnd);
@@ -330,7 +330,7 @@ public class BeltScenes {
         scene.idle(5);
         scene.world().setKineticSpeed(util.select().everywhere(), 0f);
         scene.idle(10);
-        scene.world().modifyEntities(ItemEntity.class, Entity::discard);
+        scene.world().modifyEntities(LivingBlock.class, Entity::discard);
         scene.special().movePointOfInterest(util.grid().at(2, 5, 4));
 
         Vec3 topOf = util.vector().topOf(util.grid().at(3, 2, 2)).add(-0.1, 0.3, 0);

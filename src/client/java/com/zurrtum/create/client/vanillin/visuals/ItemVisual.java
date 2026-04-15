@@ -19,14 +19,14 @@ import net.minecraft.client.renderer.item.ItemStackRenderState;
 import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.livingblock.LivingBlock;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.LightLayer;
 import net.minecraft.world.phys.AABB;
 
-public class ItemVisual extends AbstractEntityVisual<ItemEntity> implements SimpleDynamicVisual {
+public class ItemVisual extends AbstractEntityVisual<LivingBlock> implements SimpleDynamicVisual {
 
     private static final ThreadLocal<RandomSource> RANDOM = ThreadLocal.withInitial(RandomSource::createThreadLocalInstance);
 
@@ -38,21 +38,21 @@ public class ItemVisual extends AbstractEntityVisual<ItemEntity> implements Simp
 
     private final InstanceRecycler<TransformedInstance> instances;
 
-    public ItemVisual(VisualizationContext ctx, ItemEntity entity, float partialTick) {
+    public ItemVisual(VisualizationContext ctx, LivingBlock entity, float partialTick) {
         super(ctx, entity, partialTick);
 
-        updateModel(entity.getItem());
+        updateModel(entity.getItemStack());
 
         instances = new InstanceRecycler<>(this::getInstance);
 
         animate(partialTick);
     }
 
-    public static boolean isSupported(ItemEntity entity) {
-        if (entity.getClass() != ItemEntity.class) {
+    public static boolean isSupported(LivingBlock entity) {
+        if (entity.getClass() != LivingBlock.class) {
             return false;
         }
-        return ItemModels.isSupported(entity.getItem(), ItemDisplayContext.GROUND);
+        return ItemModels.isSupported(entity.getItemStack(), ItemDisplayContext.GROUND);
     }
 
     @Override
@@ -61,7 +61,7 @@ public class ItemVisual extends AbstractEntityVisual<ItemEntity> implements Simp
             return;
         }
 
-        ItemStack stack = entity.getItem();
+        ItemStack stack = entity.getItemStack();
         if (!ItemStack.isSameItemSameComponents(currentStack, stack)) {
             updateModel(stack);
             instances.delete();
@@ -86,7 +86,7 @@ public class ItemVisual extends AbstractEntityVisual<ItemEntity> implements Simp
 
         instances.resetCount();
 
-        ItemStack itemstack = entity.getItem();
+        ItemStack itemstack = entity.getItemStack();
         if (itemstack.isEmpty()) {
             return;
         }
@@ -101,16 +101,18 @@ public class ItemVisual extends AbstractEntityVisual<ItemEntity> implements Simp
             return;
         }
 
-        float age = entity.getAge() + partialTick;
+        float age = entity.tickCount + partialTick;
         AABB box = itemRenderState.getModelBoundingBox();
         float f = -((float) box.minY) + 0.0625F;
         if (shouldBob()) {
-            float g = Mth.sin(age / 10.0F + entity.bobOffs) * 0.1F + 0.1F;
+            float bobOffs = entity.hashCode() % 360;
+            float g = Mth.sin(age / 10.0F + bobOffs) * 0.1F + 0.1F;
             pPoseStack.translate(0.0F, g + f, 0.0F);
         } else {
             pPoseStack.translate(0.0F, f, 0.0F);
         }
-        float h = ItemEntity.getSpin(age, entity.bobOffs);
+        float bobOffs = entity.hashCode() % 360;
+        float h = (age / 20.0F + bobOffs) * ((float)Math.PI / 180F);
         pPoseStack.mulPose(Axis.YP.rotation(h));
 
         int i = this.getRenderAmount(itemstack);

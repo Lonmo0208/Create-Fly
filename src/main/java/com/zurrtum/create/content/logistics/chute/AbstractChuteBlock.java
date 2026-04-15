@@ -21,7 +21,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.livingblock.LivingBlock;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.*;
@@ -94,7 +94,7 @@ public abstract class AbstractChuteBlock extends Block implements IWrenchable, I
     @Override
     public void updateEntityMovementAfterFallOn(BlockGetter worldIn, Entity entityIn) {
         super.updateEntityMovementAfterFallOn(worldIn, entityIn);
-        ItemStack stack = ItemHelper.fromItemEntity(entityIn);
+        ItemStack stack = ItemHelper.fromLivingBlock(entityIn);
         if (stack.isEmpty()) {
             return;
         }
@@ -124,8 +124,8 @@ public abstract class AbstractChuteBlock extends Block implements IWrenchable, I
                     AllAdvancements.PACKAGE_CHUTE_THROW.trigger(serverPlayer);
                 }
             }
-        } else if (remainder.getCount() < stack.getCount() && entityIn instanceof ItemEntity itemEntity) {
-            itemEntity.setItem(remainder);
+        } else if (remainder.getCount() < stack.getCount() && entityIn instanceof LivingBlock itemEntity) {
+            itemEntity.setItemStack(remainder);
         }
     }
 

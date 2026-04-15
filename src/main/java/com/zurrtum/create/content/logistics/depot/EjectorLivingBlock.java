@@ -17,7 +17,7 @@ import net.minecraft.server.level.ServerEntity;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.livingblock.LivingBlock;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ClipContext;
@@ -32,7 +32,8 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import org.jspecify.annotations.Nullable;
 
-public class EjectorItemEntity extends ItemEntity {
+public class EjectorLivingBlock extends LivingBlock {
+    public int age;
     private boolean alive;
     public EntityLauncher launcher;
     public Direction direction;
@@ -42,18 +43,18 @@ public class EjectorItemEntity extends ItemEntity {
     public int progress;
     public RenderData data;
 
-    public EjectorItemEntity(Level world, EjectorBlockEntity ejector, ItemStack stack) {
+    public EjectorLivingBlock(Level world, EjectorBlockEntity ejector, ItemStack stack) {
         super(AllEntityTypes.EJECTOR_ITEM, world);
         BlockPos pos = ejector.getBlockPos();
         setPos(pos.getX() + 0.5f, pos.getY() + 0.5f, pos.getZ() + 0.5f);
-        setItem(stack);
+        setItemStack(stack);
         if (level().isClientSide()) {
             data = new RenderData();
         }
         loadLauncher(ejector);
     }
 
-    public EjectorItemEntity(EntityType<? extends EjectorItemEntity> type, Level world) {
+    public EjectorLivingBlock(EntityType<? extends EjectorLivingBlock> type, Level world) {
         super(type, world);
         if (level().isClientSide()) {
             data = new RenderData();
@@ -183,14 +184,14 @@ public class EjectorItemEntity extends ItemEntity {
 
     private void placeItemAtTarget(boolean isClient, float maxTime) {
         DirectBeltInputBehaviour targetOpenInv = getTargetOpenInv();
-        ItemStack stack = getItem();
+        ItemStack stack = getItemStack();
         if (targetOpenInv != null) {
             ItemStack remainder = targetOpenInv.handleInsertion(stack, Direction.UP, isClient && !isVirtual());
             if (remainder.isEmpty()) {
                 discard();
                 return;
             }
-            setItem(remainder);
+            setItemStack(remainder);
         }
         alive = true;
         Vec3 ejectVec = earlyTarget != null ? earlyTarget.getFirst() : getLaunchedItemLocation(maxTime);

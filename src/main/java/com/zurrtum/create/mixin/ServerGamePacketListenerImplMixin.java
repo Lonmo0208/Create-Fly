@@ -3,7 +3,7 @@ package com.zurrtum.create.mixin;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.zurrtum.create.content.logistics.stockTicker.StockTickerInteractionHandler;
-import com.zurrtum.create.content.trains.schedule.ScheduleItemEntityInteraction;
+import com.zurrtum.create.content.trains.schedule.ScheduleLivingBlockInteraction;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.network.ServerGamePacketListenerImpl;
 import net.minecraft.world.InteractionHand;
@@ -23,7 +23,7 @@ public class ServerGamePacketListenerImplMixin {
         Vec3 location,
         Operation<InteractionResult> original
     ) {
-        InteractionResult result = ScheduleItemEntityInteraction.interactWithConductor(entity, player, hand);
+        InteractionResult result = ScheduleLivingBlockInteraction.interactWithConductor(entity, player, hand);
         if (result != null) {
             return result;
         }

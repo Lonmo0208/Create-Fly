@@ -5,15 +5,15 @@ import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.zurrtum.create.foundation.block.SlipperinessControlBlock;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.livingblock.LivingBlock;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 
-@Mixin(ItemEntity.class)
-public abstract class ItemEntityMixin extends Entity {
-    public ItemEntityMixin(EntityType<?> type, Level world) {
+@Mixin(LivingBlock.class)
+public abstract class LivingBlockMixin extends Entity {
+    public LivingBlockMixin(EntityType<?> type, Level world) {
         super(type, world);
     }
 

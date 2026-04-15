@@ -9,7 +9,7 @@ import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.world.entity.Display;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.decoration.ItemFrame;
-import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.livingblock.LivingBlock;
 import net.minecraft.world.entity.vehicle.minecart.AbstractMinecart;
 import net.minecraft.world.entity.vehicle.minecart.MinecartTNT;
 
@@ -19,7 +19,7 @@ public class VisualElements {
     public static final VisualElement<Entity, ShadowElement.Config> SHADOW = ShadowElement::new;
     public static final VisualElement.Unit<Entity> FIRE = FireElement::new;
 
-    public static final VisualElement.Unit<ItemEntity> ITEM_ENTITY = ItemVisual::new;
+    public static final VisualElement.Unit<LivingBlock> ITEM_ENTITY = ItemVisual::new;
     public static final VisualElement.Unit<Display.ItemDisplay> ITEM_DISPLAY = ItemDisplayVisual::new;
     public static final VisualElement.Unit<Display.BlockDisplay> BLOCK_DISPLAY = BlockDisplayVisual::new;
     public static final VisualElement.Unit<ItemFrame> ITEM_FRAME = ItemFrameVisual::new;

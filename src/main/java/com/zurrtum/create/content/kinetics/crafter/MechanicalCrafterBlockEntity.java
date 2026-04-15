@@ -25,7 +25,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.Container;
-import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.livingblock.LivingBlock;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.level.Level;
@@ -536,9 +536,8 @@ public class MechanicalCrafterBlockEntity extends KineticBlockEntity implements 
     }
 
     public void dropItem(Vec3 ejectPos, ItemStack stack) {
-        ItemEntity itemEntity = new ItemEntity(level, ejectPos.x, ejectPos.y, ejectPos.z, stack);
-        itemEntity.setDefaultPickUpDelay();
-        level.addFreshEntity(itemEntity);
+        BlockPos pos = BlockPos.containing(ejectPos);
+        LivingBlock.createAt(level, pos, stack);
     }
 
     @Override

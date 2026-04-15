@@ -11,7 +11,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.livingblock.LivingBlock;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
@@ -70,7 +70,7 @@ public class FunnelMovementBehaviour extends MovementBehaviour {
             return;
         }
 
-        if (!world.getEntitiesOfClass(ItemEntity.class, new AABB(BlockPos.containing(entityPos))).isEmpty()) {
+        if (!world.getEntitiesOfClass(LivingBlock.class, new AABB(BlockPos.containing(entityPos))).isEmpty()) {
             return;
         }
 
@@ -95,11 +95,12 @@ public class FunnelMovementBehaviour extends MovementBehaviour {
             return;
         }
 
-        ItemEntity entity = new ItemEntity(world, entityPos.x, entityPos.y, entityPos.z, extract);
-        entity.setDeltaMovement(Vec3.ZERO);
-        entity.setPickUpDelay(5);
+        BlockPos spawnPos = BlockPos.containing(entityPos.x, entityPos.y, entityPos.z);
+        LivingBlock entity = LivingBlock.createAt(world, spawnPos, extract);
+        if (entity != null) {
+            entity.setDeltaMovement(Vec3.ZERO);
+        }
         world.playSound(null, pos, SoundEvents.ITEM_PICKUP, SoundSource.BLOCKS, 1 / 16f, .1f);
-        world.addFreshEntity(entity);
     }
 
     private void succ(MovementContext context, BlockPos pos) {
@@ -107,7 +108,7 @@ public class FunnelMovementBehaviour extends MovementBehaviour {
         List<Entity> items = world.getEntities(
             (Entity) null,
             new AABB(pos),
-            e -> e instanceof ItemEntity || e instanceof PackageEntity
+            e -> e instanceof LivingBlock || e instanceof PackageEntity
         );
         FilterItemStack filter = context.getFilterFromBE();
 
@@ -115,7 +116,7 @@ public class FunnelMovementBehaviour extends MovementBehaviour {
             if (!entity.isAlive()) {
                 continue;
             }
-            ItemStack toInsert = ItemHelper.fromItemEntity(entity);
+            ItemStack toInsert = ItemHelper.fromLivingBlock(entity);
             if (!filter.test(context.world, toInsert)) {
                 continue;
             }
@@ -126,8 +127,8 @@ public class FunnelMovementBehaviour extends MovementBehaviour {
                 entity.discard();
             } else if (insert > 0) {
                 toInsert.setCount(count - insert);
-                if (entity instanceof ItemEntity item) {
-                    item.setItem(toInsert);
+                if (entity instanceof LivingBlock item) {
+                    item.setItemStack(toInsert);
                 }
             }
         }

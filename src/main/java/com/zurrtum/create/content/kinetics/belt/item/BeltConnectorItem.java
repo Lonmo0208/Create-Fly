@@ -125,7 +125,7 @@ public class BeltConnectorItem extends BlockItem {
 
         for (BlockPos pos : beltsToCreate) {
             BlockState existingBlock = world.getBlockState(pos);
-            if (existingBlock.getDestroySpeed(world, pos) == -1) {
+            if (existingBlock.getDestroySpeed() == -1) {
                 failed = true;
                 break;
             }

@@ -62,9 +62,9 @@ public class ServerPlayerGameModeMixin {
         ItemStack stack,
         InteractionHand hand,
         BlockHitResult hit,
-        CallbackInfoReturnable<InteractionResult> cir,
-        @Local BlockPos pos
+        CallbackInfoReturnable<InteractionResult> cir
     ) {
+        BlockPos pos = hit.getBlockPos();
         Stream.<ServerRightClickHandle>of(
                 WrenchEventHandler::useOwnWrenchLogicForCreateBlocks,
                 ClipboardValueSettingsHandler::rightClickToCopy,
@@ -103,9 +103,10 @@ public class ServerPlayerGameModeMixin {
         @Local(argsOnly = true) Level world,
         @Local(argsOnly = true) ItemStack stack,
         @Local(argsOnly = true) InteractionHand hand,
-        @Local BlockPos pos,
-        @Local BlockState state
+        @Local(argsOnly = true) BlockHitResult hit
     ) {
+        BlockPos pos = hit.getBlockPos();
+        BlockState state = world.getBlockState(pos);
         if (original.call(instance)) {
             return !(HandCrankBlock.onBlockActivated(hand, state, stack) || AnalogLeverBlock.onBlockActivated(
                 hand,
@@ -129,7 +130,7 @@ public class ServerPlayerGameModeMixin {
         Operation<Void> original
     ) {
         original.call(stack, world, state, pos, miner);
-        if (!world.isClientSide() && state.getDestroySpeed(world, pos) != 0) {
+        if (!world.isClientSide() && state.getDestroySpeed() != 0) {
             ExtendoGripItem.postMine(miner, stack);
         }
     }

@@ -20,7 +20,7 @@ import com.zurrtum.create.infrastructure.config.AllConfigs;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.livingblock.LivingBlock;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.block.state.BlockState;
@@ -112,8 +112,8 @@ public class MechanicalPressBlockEntity extends BasinOperatingBlockEntity implem
     }
 
     @Override
-    public boolean tryProcessInWorld(ItemEntity itemEntity, boolean simulate) {
-        ItemStack item = itemEntity.getItem();
+    public boolean tryProcessInWorld(LivingBlock itemEntity, boolean simulate) {
+        ItemStack item = itemEntity.getItemStack();
         SingleRecipeInput input = new SingleRecipeInput(item);
         Optional<RecipeHolder<PressingRecipe>> recipe = getRecipe(input);
         if (recipe.isEmpty()) {
@@ -127,23 +127,18 @@ public class MechanicalPressBlockEntity extends BasinOperatingBlockEntity implem
         pressingBehaviour.particleItems.add(item);
         if (canProcessInBulk() || item.getCount() == 1) {
             RecipeApplier.applyRecipeOn(itemEntity, input, recipe.get().value());
-            itemCreated = itemEntity.getItem().copy();
+            itemCreated = itemEntity.getItemStack().copy();
         } else {
             RandomSource random = level.getRandom();
             for (ItemStack result : RecipeApplier.applyRecipeOn(random, 1, input, recipe.get().value())) {
                 if (itemCreated.isEmpty()) {
                     itemCreated = result.copy();
                 }
-                ItemEntity created = new ItemEntity(
-                    level,
-                    itemEntity.getX(),
-                    itemEntity.getY(),
-                    itemEntity.getZ(),
-                    result
-                );
-                created.setDefaultPickUpDelay();
-                created.setDeltaMovement(VecHelper.offsetRandomly(Vec3.ZERO, random, .05f));
-                level.addFreshEntity(created);
+                BlockPos pos = BlockPos.containing(itemEntity.getX(), itemEntity.getY(), itemEntity.getZ());
+                LivingBlock created = LivingBlock.createAt(level, pos, result);
+                if (created != null) {
+                    created.setDeltaMovement(VecHelper.offsetRandomly(Vec3.ZERO, random, .05f));
+                }
             }
             item.shrink(1);
         }

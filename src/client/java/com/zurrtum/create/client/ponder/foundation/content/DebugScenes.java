@@ -366,7 +366,7 @@ public class DebugScenes {
 		ItemStack copperItem = new ItemStack(Items.COPPER_INGOT);
 
 		for (int z = 4; z >= 2; z--) {
-			scene.world.createItemEntity(util.vector.centerOf(0, 4, z), Vec3.ZERO, brassItem.copy());
+			scene.world.createLivingBlock(util.vector.centerOf(0, 4, z), Vec3.ZERO, brassItem.copy());
 			scene.idle(10);
 		}
 
@@ -385,21 +385,21 @@ public class DebugScenes {
 		scene.world.stallBeltItem(itemOnBelt, false);
 		scene.idle(20);
 
-		scene.world.modifyEntities(ItemEntity.class, entity -> {
+		scene.world.modifyEntities(LivingBlock.class, entity -> {
 			if (copperItem.sameItem(entity.getItem()))
 				entity.setNoGravity(true);
 		});
 
 		scene.idle(20);
 
-		scene.world.modifyEntities(ItemEntity.class, entity -> {
+		scene.world.modifyEntities(LivingBlock.class, entity -> {
 			if (brassItem.sameItem(entity.getItem()))
 				entity.setDeltaMovement(util.vector.of(-.15f, .5f, 0));
 		});
 
 		scene.idle(27);
 
-		scene.world.modifyEntities(ItemEntity.class, Entity::discard);
+		scene.world.modifyEntities(LivingBlock.class, Entity::discard);
 	}*/
 
 }

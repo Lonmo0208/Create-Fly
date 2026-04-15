@@ -31,7 +31,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.Clearable;
 import net.minecraft.world.Container;
 import net.minecraft.world.Containers;
-import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.livingblock.LivingBlock;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.level.block.Block;
@@ -228,11 +228,11 @@ public class ChuteBlockEntity extends SmartBlockEntity implements Clearable {
         }
         Vec3 center = VecHelper.getCenterOf(worldPosition);
         AABB searchArea = new AABB(center.add(0, -bottomPullDistance - 0.5, 0), center.add(0, -0.5, 0)).inflate(.45f);
-        for (ItemEntity itemEntity : level.getEntitiesOfClass(ItemEntity.class, searchArea)) {
+        for (LivingBlock itemEntity : level.getEntitiesOfClass(LivingBlock.class, searchArea)) {
             if (!itemEntity.isAlive()) {
                 continue;
             }
-            ItemStack entityItem = itemEntity.getItem();
+            ItemStack entityItem = itemEntity.getItemStack();
             if (!canAcceptItem(entityItem)) {
                 continue;
             }
@@ -428,10 +428,11 @@ public class ChuteBlockEntity extends SmartBlockEntity implements Clearable {
 
         if (!simulate) {
             Vec3 dropVec = VecHelper.getCenterOf(worldPosition).add(0, -12 / 16f, 0);
-            ItemEntity dropped = new ItemEntity(level, dropVec.x, dropVec.y, dropVec.z, item.copy());
-            dropped.setDefaultPickUpDelay();
-            dropped.setDeltaMovement(0, -.25f, 0);
-            level.addFreshEntity(dropped);
+            BlockPos pos = BlockPos.containing(dropVec);
+            LivingBlock dropped = LivingBlock.createAt(level, pos, item.copy());
+            if (dropped != null) {
+                dropped.setDeltaMovement(0, -.25f, 0);
+            }
             setItem(ItemStack.EMPTY);
         }
 
@@ -508,10 +509,11 @@ public class ChuteBlockEntity extends SmartBlockEntity implements Clearable {
 
         if (!simulate) {
             Vec3 dropVec = VecHelper.getCenterOf(worldPosition).add(0, 8 / 16f, 0);
-            ItemEntity dropped = new ItemEntity(level, dropVec.x, dropVec.y, dropVec.z, item.copy());
-            dropped.setDefaultPickUpDelay();
-            dropped.setDeltaMovement(0, getItemMotion() * 2, 0);
-            level.addFreshEntity(dropped);
+            BlockPos pos = BlockPos.containing(dropVec);
+            LivingBlock dropped = LivingBlock.createAt(level, pos, item.copy());
+            if (dropped != null) {
+                dropped.setDeltaMovement(0, getItemMotion() * 2, 0);
+            }
             setItem(ItemStack.EMPTY);
         }
         return true;

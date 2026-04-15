@@ -23,12 +23,12 @@ public abstract class IrisPipelinesMixin {
     @Inject(method = "<clinit>", at = @At("TAIL"))
     private static void add(CallbackInfo ci) {
         IrisPipelines.copyPipeline(
-            RenderPipelines.ITEM_ENTITY_TRANSLUCENT_CULL,
-            PonderRenderPipelines.RENDERTYPE_ITEM_ENTITY_TRANSLUCENT_CULL
+            RenderPipelines.ENTITY_TRANSLUCENT_CULL,
+            PonderRenderPipelines.ENTITY_TRANSLUCENT_CULL
         );
         IrisPipelines.copyPipeline(RenderPipelines.ENTITY_TRANSLUCENT, PonderRenderPipelines.ENTITY_TRANSLUCENT);
-        IrisPipelines.copyPipeline(RenderPipelines.SOLID, AllRenderPipelines.ADDITIVE);
-        IrisPipelines.copyPipeline(RenderPipelines.SOLID, AllRenderPipelines.ADDITIVE2);
+        IrisPipelines.copyPipeline(RenderPipelines.SOLID_BLOCK, AllRenderPipelines.ADDITIVE);
+        IrisPipelines.copyPipeline(RenderPipelines.SOLID_TERRAIN, AllRenderPipelines.ADDITIVE2);
         IrisPipelines.copyPipeline(RenderPipelines.TRANSLUCENT_PARTICLE, AllRenderPipelines.CUBE);
         IrisPipelines.assignPipeline(AllRenderPipelines.GLOWING, ShaderKey.BLOCK_ENTITY_BRIGHT);
         IrisPipelines.assignPipeline(AllRenderPipelines.GLOWING_TRANSLUCENT, ShaderKey.BE_TRANSLUCENT);

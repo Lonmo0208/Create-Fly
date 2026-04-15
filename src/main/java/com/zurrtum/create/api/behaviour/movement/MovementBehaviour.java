@@ -4,7 +4,7 @@ import com.zurrtum.create.api.registry.SimpleRegistry;
 import com.zurrtum.create.content.contraptions.behaviour.MovementContext;
 import com.zurrtum.create.infrastructure.config.AllConfigs;
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.livingblock.LivingBlock;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.phys.Vec3;
@@ -90,9 +90,11 @@ public abstract class MovementBehaviour {
             return;
         }
 
-        ItemEntity itemEntity = new ItemEntity(context.world, vec.x, vec.y, vec.z, stack);
-        itemEntity.setDeltaMovement(context.motion.add(0, 0.5f, 0).scale(context.world.getRandom().nextFloat() * .3f));
-        context.world.addFreshEntity(itemEntity);
+        BlockPos pos = BlockPos.containing(vec);
+        LivingBlock itemEntity = LivingBlock.createAt(context.world, pos, stack);
+        if (itemEntity != null) {
+            itemEntity.setDeltaMovement(context.motion.add(0, 0.5f, 0).scale(context.world.getRandom().nextFloat() * .3f));
+        }
     }
 
     public void onSpeedChanged(MovementContext context, Vec3 oldMotion, Vec3 motion) {

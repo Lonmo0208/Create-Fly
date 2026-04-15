@@ -14,7 +14,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.livingblock.LivingBlock;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.vehicle.minecart.AbstractMinecart;
 import net.minecraft.world.level.Level;
@@ -63,7 +63,7 @@ public class BlockBreakingMovementBehaviour extends MovementBehaviour {
         }
         Entities:
         for (Entity entity : world.getEntitiesOfClass(Entity.class, new AABB(pos))) {
-            if (entity instanceof ItemEntity) {
+            if (entity instanceof LivingBlock) {
                 continue;
             }
             if (entity instanceof AbstractContraptionEntity) {
@@ -184,7 +184,7 @@ public class BlockBreakingMovementBehaviour extends MovementBehaviour {
         int destroyProgress = data.getIntOr("Progress", 0);
         int id = data.getIntOr("BreakerId", 0);
         BlockState stateToBreak = world.getBlockState(breakingPos);
-        float blockHardness = stateToBreak.getDestroySpeed(world, breakingPos);
+        float blockHardness = stateToBreak.getDestroySpeed();
 
         if (!canBreak(world, breakingPos, stateToBreak)) {
             if (destroyProgress != 0) {
@@ -251,7 +251,7 @@ public class BlockBreakingMovementBehaviour extends MovementBehaviour {
     }
 
     public boolean canBreak(Level world, BlockPos breakingPos, BlockState state) {
-        float blockHardness = state.getDestroySpeed(world, breakingPos);
+        float blockHardness = state.getDestroySpeed();
         return BlockBreakingKineticBlockEntity.isBreakable(state, blockHardness);
     }
 

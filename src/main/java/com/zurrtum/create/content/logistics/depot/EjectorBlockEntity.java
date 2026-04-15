@@ -30,7 +30,7 @@ import net.minecraft.world.Container;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.livingblock.LivingBlock;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -143,7 +143,7 @@ public class EjectorBlockEntity extends KineticBlockEntity {
             if (!entity.isAlive()) {
                 continue;
             }
-            if (entity instanceof ItemEntity) {
+            if (entity instanceof LivingBlock) {
                 continue;
             }
             if (entity instanceof PackageEntity) {
@@ -295,7 +295,7 @@ public class EjectorBlockEntity extends KineticBlockEntity {
             scanCooldown = AllConfigs.server().kinetics.ejectorScanInterval.get();
             trackedItem = stack;
         }
-        EjectorItemEntity item = new EjectorItemEntity(level, this, stack);
+        EjectorLivingBlock item = new EjectorLivingBlock(level, this, stack);
         level.addFreshEntity(item);
     }
 

@@ -206,7 +206,7 @@ public class SymmetryWandItem extends Item {
                 }
 
                 BlockState toReplace = world.getBlockState(position);
-                if (toReplace.getDestroySpeed(world, position) == -1) {
+                if (toReplace.getDestroySpeed() == -1) {
                     continue;
                 }
 

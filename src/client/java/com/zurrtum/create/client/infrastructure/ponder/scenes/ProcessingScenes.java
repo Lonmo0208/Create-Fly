@@ -35,7 +35,7 @@ import net.minecraft.resources.RegistryOps;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.livingblock.LivingBlock;
 import net.minecraft.world.entity.monster.Blaze;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -85,7 +85,7 @@ public class ProcessingScenes {
         Vec3 entitySpawn = util.vector().topOf(millstone.above(3));
 
         ElementLink<EntityElement> entity1 = scene.world()
-            .createItemEntity(entitySpawn, util.vector().of(0, 0.2, 0), itemStack);
+            .createLivingBlock(entitySpawn, util.vector().of(0, 0.2, 0), itemStack);
         scene.idle(18);
         scene.world().modifyEntity(entity1, Entity::discard);
         scene.world().modifyBlockEntity(
@@ -187,7 +187,7 @@ public class ProcessingScenes {
         Vec3 entitySpawn = util.vector().topOf(center.above(2));
 
         ElementLink<EntityElement> entity1 = scene.world()
-            .createItemEntity(entitySpawn, util.vector().of(0, 0.2, 0), input);
+            .createLivingBlock(entitySpawn, util.vector().of(0, 0.2, 0), input);
         scene.idle(18);
         scene.world().modifyEntity(entity1, Entity::discard);
         ParticleEmitter blockSpace = scene.effects()
@@ -204,9 +204,9 @@ public class ProcessingScenes {
             .pointAt(centerTop).placeNearTarget();
         scene.idle(60);
 
-        scene.world().createItemEntity(centerTop.add(0, -1.4, 0), util.vector().of(0, 0, 0), output);
+        scene.world().createLivingBlock(centerTop.add(0, -1.4, 0), util.vector().of(0, 0, 0), output);
         scene.idle(10);
-        scene.world().createItemEntity(centerTop.add(0, -1.4, 0), util.vector().of(0, 0, 0), output);
+        scene.world().createLivingBlock(centerTop.add(0, -1.4, 0), util.vector().of(0, 0, 0), output);
         scene.overlay().showControls(centerTop.add(0, -2, 0), Pointing.UP, 30).withItem(output);
         scene.idle(40);
 
@@ -215,7 +215,7 @@ public class ProcessingScenes {
         scene.idle(5);
         scene.world().showSection(beltCog, Direction.UP);
         scene.idle(5);
-        scene.world().modifyEntities(ItemEntity.class, Entity::discard);
+        scene.world().modifyEntities(LivingBlock.class, Entity::discard);
         scene.world().showSection(bottomBelt, Direction.SOUTH);
         scene.idle(5);
 
@@ -697,7 +697,7 @@ public class ProcessingScenes {
 
         ItemStack stack = new ItemStack(Items.BRICK);
         for (int i = 0; i < 4; i++) {
-            scene.world().createItemEntity(util.vector().centerOf(basinPos.above(3)), util.vector().of(0, 0, 0), stack);
+            scene.world().createLivingBlock(util.vector().centerOf(basinPos.above(3)), util.vector().of(0, 0, 0), stack);
             scene.idle(10);
         }
         scene.idle(10);

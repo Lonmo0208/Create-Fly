@@ -17,7 +17,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.livingblock.LivingBlock;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
@@ -133,17 +133,16 @@ public class BeltSlicer {
                 for (TransportedItemStack transportedItemStack : inventory.getTransportedItems()) {
                     transportedItemStack.beltPosition -= 1;
                     if (transportedItemStack.beltPosition <= 0) {
-                        ItemEntity entity = new ItemEntity(
-                            world,
+                        BlockPos entityPos = BlockPos.containing(
                             pos.getX() + .5f,
                             pos.getY() + 11 / 16f,
-                            pos.getZ() + .5f,
-                            transportedItemStack.stack
+                            pos.getZ() + .5f
                         );
-                        entity.setDeltaMovement(Vec3.ZERO);
-                        entity.setDefaultPickUpDelay();
-                        entity.hurtMarked = true;
-                        world.addFreshEntity(entity);
+                        LivingBlock entity = LivingBlock.createAt(world, entityPos, transportedItemStack.stack);
+                        if (entity != null) {
+                            entity.setDeltaMovement(Vec3.ZERO);
+                            entity.hurtMarked = true;
+                        }
                     } else {
                         segmentBE.getInventory().addItem(transportedItemStack);
                     }

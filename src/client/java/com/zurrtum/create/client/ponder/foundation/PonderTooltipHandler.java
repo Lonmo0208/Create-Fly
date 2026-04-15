@@ -64,7 +64,7 @@ public class PonderTooltipHandler {
         float value = holdKeyProgress.getValue();
 
         if (RenderSystem.isOnRenderThread() && !subject && !PonderKeybinds.PONDER.isUnbound() && InputConstants.isKeyDown(instance.getWindow(),
-            PonderKeybinds.PONDER.key.getValue()
+                PonderKeybinds.PONDER.key.getValue()
         ) && currentScreen != null) {
             if (value >= 1) {
                 if (currentScreen instanceof NavigatableSimiScreen) {
@@ -105,9 +105,9 @@ public class PonderTooltipHandler {
         // TODO - Checkover
         float renderPartialTicks = AnimationTickHolder.getPartialTicksUI(mc.getDeltaTracker());
         Component component = subject ? Ponder.lang().translate(SUBJECT).component()
-            .withStyle(ChatFormatting.GREEN) : makeProgressBar(Math.min(
-            1,
-            holdKeyProgress.getValue(renderPartialTicks) * 8 / 7f
+                                        .withStyle(ChatFormatting.GREEN) : makeProgressBar(Math.min(
+                1,
+                holdKeyProgress.getValue(renderPartialTicks) * 8 / 7f
         ));
         if (toolTip.size() < 2) {
             toolTip.add(component);
@@ -182,10 +182,16 @@ public class PonderTooltipHandler {
     }
 
     private static Component makeProgressBar(float progress) {
-        MutableComponent holdW = Ponder.lang().translate(
-            HOLD_TO_PONDER,
-            PonderKeybinds.PONDER.getTranslatedKeyMessage().copy().withStyle(ChatFormatting.GRAY)
+        // 获取按键显示名称（安全，不触发渲染线程）
+        String keyName = PonderKeybinds.PONDER.getDefaultKey().getDisplayName().getString();
+        MutableComponent holdW = Ponder.lang().translate(HOLD_TO_PONDER,
+                Component.literal(keyName).withStyle(ChatFormatting.GRAY)
         ).style(ChatFormatting.DARK_GRAY).component();
+
+        // 如果不是渲染线程，只返回文本，不计算进度条（避免字体渲染）
+        if (!RenderSystem.isOnRenderThread()) {
+            return holdW;
+        }
 
         if (progress > 0) {
             Font fontRenderer = Minecraft.getInstance().font;

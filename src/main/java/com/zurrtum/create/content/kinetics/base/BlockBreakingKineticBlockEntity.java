@@ -7,7 +7,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
-import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.livingblock.LivingBlock;
 import net.minecraft.world.level.block.AirBlock;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -107,7 +107,7 @@ public abstract class BlockBreakingKineticBlockEntity extends KineticBlockEntity
         }
 
         BlockState stateToBreak = level.getBlockState(breakingPos);
-        float blockHardness = stateToBreak.getDestroySpeed(level, breakingPos);
+        float blockHardness = stateToBreak.getDestroySpeed();
 
         if (!canBreak(stateToBreak, blockHardness)) {
             if (destroyProgress != 0) {
@@ -154,10 +154,11 @@ public abstract class BlockBreakingKineticBlockEntity extends KineticBlockEntity
                     return;
                 }
 
-                ItemEntity itementity = new ItemEntity(level, vec.x, vec.y, vec.z, stack);
-                itementity.setDefaultPickUpDelay();
-                itementity.setDeltaMovement(Vec3.ZERO);
-                level.addFreshEntity(itementity);
+                BlockPos pos = BlockPos.containing(vec);
+                LivingBlock itementity = LivingBlock.createAt(level, pos, stack);
+                if (itementity != null) {
+                    itementity.setDeltaMovement(Vec3.ZERO);
+                }
             }
         );
     }

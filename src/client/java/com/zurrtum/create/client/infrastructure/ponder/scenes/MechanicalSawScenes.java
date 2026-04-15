@@ -19,7 +19,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.livingblock.LivingBlock;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
@@ -56,7 +56,7 @@ public class MechanicalSawScenes {
         ItemStack planks = new ItemStack(Items.OAK_PLANKS);
 
         Vec3 itemSpawn = util.vector().centerOf(sawPos.above().west());
-        ElementLink<EntityElement> logItem = scene.world().createItemEntity(itemSpawn, util.vector().of(0, 0, 0), log);
+        ElementLink<EntityElement> logItem = scene.world().createLivingBlock(itemSpawn, util.vector().of(0, 0, 0), log);
         scene.idle(12);
 
         scene.overlay().showControls(itemSpawn, Pointing.DOWN, 20).withItem(log);
@@ -93,7 +93,7 @@ public class MechanicalSawScenes {
                 inventory.remainingTime = -1;
             }
         );
-        logItem = scene.world().createItemEntity(
+        logItem = scene.world().createLivingBlock(
             util.vector().topOf(sawPos).add(0.5, -.1, 0),
             util.vector().of(0.05, 0.18, 0),
             strippedLog
@@ -141,7 +141,7 @@ public class MechanicalSawScenes {
             }
         );
         logItem = scene.world()
-            .createItemEntity(util.vector().topOf(sawPos).add(-0.5, -.1, 0), util.vector().of(-0.05, 0.18, 0), planks);
+            .createLivingBlock(util.vector().topOf(sawPos).add(-0.5, -.1, 0), util.vector().of(-0.05, 0.18, 0), planks);
         scene.idle(22);
 
         Selection otherBelt = util.select().fromTo(3, 1, 3, 4, 1, 2);
@@ -224,7 +224,7 @@ public class MechanicalSawScenes {
         scene.idle(75);
 
         scene.overlay().showControls(filter, Pointing.DOWN, 30).withItem(bricks);
-        scene.world().modifyEntities(ItemEntity.class, Entity::discard);
+        scene.world().modifyEntities(LivingBlock.class, Entity::discard);
         scene.idle(7);
         scene.world().setFilterData(util.select().position(sawPos), SawBlockEntity.class, bricks);
         scene.idle(10);
@@ -264,7 +264,7 @@ public class MechanicalSawScenes {
         scene.overlay().showText(100).text("Without filter, the Saw would cycle through all outcomes instead")
             .colored(PonderPalette.RED).pointAt(filter).placeNearTarget();
         scene.idle(65);
-        scene.world().modifyEntities(ItemEntity.class, Entity::discard);
+        scene.world().modifyEntities(LivingBlock.class, Entity::discard);
     }
 
     public static void treeCutting(SceneBuilder builder, SceneBuildingUtil util) {
@@ -319,14 +319,14 @@ public class MechanicalSawScenes {
             Vec3 dropPos = util.vector().centerOf(breakingPos.above(i));
             float distance = (float) dropPos.distanceTo(util.vector().centerOf(breakingPos));
             scene.world()
-                .createItemEntity(dropPos, util.vector().of(-distance / 20, 0, 0), new ItemStack(Items.OAK_LOG));
+                .createLivingBlock(dropPos, util.vector().of(-distance / 20, 0, 0), new ItemStack(Items.OAK_LOG));
         }
 
         scene.idle(35);
         scene.world().destroyBlock(util.grid().at(1, 1, 2));
         scene.world()
             .hideSection(util.select().layersFrom(2).add(util.select().fromTo(2, 1, 2, 1, 1, 3)), Direction.UP);
-        scene.world().modifyEntities(ItemEntity.class, Entity::discard);
+        scene.world().modifyEntities(LivingBlock.class, Entity::discard);
         scene.idle(15);
         scene.world().setBlocks(util.select().fromTo(2, 1, 2, 1, 20, 3), Blocks.JUNGLE_LOG.defaultBlockState(), false);
         scene.world()
@@ -355,7 +355,7 @@ public class MechanicalSawScenes {
                 for (int z = 2; z <= 3; z++) {
                     Vec3 dropPos = util.vector().centerOf(x, i + 1, z);
                     float distance = (float) dropPos.distanceTo(util.vector().centerOf(breakingPos));
-                    scene.world().createItemEntity(
+                    scene.world().createLivingBlock(
                         dropPos,
                         util.vector().of(-distance / 20, 0, 0),
                         new ItemStack(Items.JUNGLE_LOG)
@@ -436,7 +436,7 @@ public class MechanicalSawScenes {
             Vec3 dropPos = util.vector().centerOf(breakingPos.above(i));
             float distance = (float) dropPos.distanceTo(util.vector().centerOf(breakingPos));
             scene.world()
-                .createItemEntity(dropPos, util.vector().of(-distance / 20, 0, 0), new ItemStack(Items.OAK_LOG));
+                .createLivingBlock(dropPos, util.vector().of(-distance / 20, 0, 0), new ItemStack(Items.OAK_LOG));
         }
 
         scene.world().moveSection(pistonHead, util.vector().of(-1, 0, 0), 20);
@@ -452,7 +452,7 @@ public class MechanicalSawScenes {
         scene.idle(40);
 
         scene.world().restoreBlocks(tree);
-        scene.world().modifyEntities(ItemEntity.class, Entity::discard);
+        scene.world().modifyEntities(LivingBlock.class, Entity::discard);
         scene.world().glueBlockOnto(util.grid().at(5, 2, 2), Direction.DOWN, contraption);
 
         scene.overlay().showText(60).attachKeyFrame().placeNearTarget()

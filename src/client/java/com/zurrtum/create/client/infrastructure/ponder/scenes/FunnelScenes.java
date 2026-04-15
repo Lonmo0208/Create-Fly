@@ -19,7 +19,7 @@ import com.zurrtum.create.content.processing.recipe.ProcessingInventory;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.livingblock.LivingBlock;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
@@ -77,14 +77,14 @@ public class FunnelScenes {
 
         Vec3 topItemSpawn = util.vector().centerOf(2, 6, 4);
         Vec3 sideItemSpawn = util.vector().centerOf(1, 3, 4).add(0.15f, -0.45f, 0);
-        ElementLink<EntityElement> lastItemEntity = null;
+        ElementLink<EntityElement> lastLivingBlock = null;
 
         for (int i = 0; i < 4; i++) {
-            if (lastItemEntity != null) {
-                scene.world().modifyEntity(lastItemEntity, Entity::discard);
+            if (lastLivingBlock != null) {
+                scene.world().modifyEntity(lastLivingBlock, Entity::discard);
             }
             if (i < 3) {
-                lastItemEntity = scene.world().createItemEntity(topItemSpawn, util.vector().of(0, -0.4, 0), itemStack);
+                lastLivingBlock = scene.world().createLivingBlock(topItemSpawn, util.vector().of(0, -0.4, 0), itemStack);
             }
             scene.idle(8);
         }
@@ -101,7 +101,7 @@ public class FunnelScenes {
         for (int i = 0; i < 3; i++) {
             scene.idle(8);
             scene.world().flapFunnel(util.grid().at(1, 2, 4), false);
-            scene.world().createItemEntity(sideItemSpawn, util.vector().of(-.05, 0, 0), itemStack);
+            scene.world().createLivingBlock(sideItemSpawn, util.vector().of(-.05, 0, 0), itemStack);
         }
 
         scene.idle(8);
@@ -137,7 +137,7 @@ public class FunnelScenes {
         scene.idle(45);
 
         ElementLink<EntityElement> itemLink = scene.world()
-            .createItemEntity(topCenter, util.vector().of(0, 4 / 16f, 0), itemStack);
+            .createLivingBlock(topCenter, util.vector().of(0, 4 / 16f, 0), itemStack);
         scene.idle(40);
 
         scene.world().modifyEntity(itemLink, Entity::discard);
@@ -154,7 +154,7 @@ public class FunnelScenes {
             .pointAt(topCenter).placeNearTarget();
         scene.idle(45);
 
-        itemLink = scene.world().createItemEntity(topCenter.add(0, 3, 0), util.vector().of(0, -0.2, 0), itemStack);
+        itemLink = scene.world().createLivingBlock(topCenter.add(0, 3, 0), util.vector().of(0, -0.2, 0), itemStack);
         scene.idle(10);
 
         scene.world().modifyEntity(itemLink, Entity::discard);
@@ -169,7 +169,7 @@ public class FunnelScenes {
         scene.overlay().showText(80).text("Using a wrench, the funnel can be flipped after placement.").attachKeyFrame()
             .pointAt(topCenter).placeNearTarget();
 
-        itemLink = scene.world().createItemEntity(topCenter, util.vector().of(0, 4 / 16f, 0), itemStack);
+        itemLink = scene.world().createLivingBlock(topCenter, util.vector().of(0, 4 / 16f, 0), itemStack);
         scene.idle(30);
 
         scene.overlay().showControls(topSide, Pointing.RIGHT, 40).rightClick()
@@ -195,7 +195,7 @@ public class FunnelScenes {
 
         scene.world().flapFunnel(sideFunnel, true);
         itemLink = scene.world()
-            .createItemEntity(sideCenter.subtract(0, .45, 0), util.vector().of(0, 0, -0.1), itemStack);
+            .createLivingBlock(sideCenter.subtract(0, .45, 0), util.vector().of(0, 0, -0.1), itemStack);
         scene.idle(60);
         scene.world().hideSection(sideFunnelSelection, Direction.UP);
         scene.world().hideSection(topFunnelSelection, Direction.UP);
@@ -311,7 +311,7 @@ public class FunnelScenes {
 
         ItemStack itemStack = AllItems.BRASS_BLOCK.getDefaultInstance();
         Vec3 topItemSpawn = util.vector().centerOf(3, 6, 2);
-        ElementLink<EntityElement> lastItemEntity = null;
+        ElementLink<EntityElement> lastLivingBlock = null;
 
         BlockPos lever = util.grid().at(1, 2, 2);
         BlockPos redstone = util.grid().at(2, 2, 2);
@@ -320,10 +320,10 @@ public class FunnelScenes {
         AABB redstoneBB = new AABB(funnel).inflate(-1 / 16f, -6 / 16f, -1 / 16f).move(0, -5 / 16f, 0);
 
         for (int i = 0; i < 4; i++) {
-            if (lastItemEntity != null) {
-                scene.world().modifyEntity(lastItemEntity, Entity::discard);
+            if (lastLivingBlock != null) {
+                scene.world().modifyEntity(lastLivingBlock, Entity::discard);
             }
-            lastItemEntity = scene.world().createItemEntity(topItemSpawn, util.vector().of(0, -0.2, 0), itemStack);
+            lastLivingBlock = scene.world().createLivingBlock(topItemSpawn, util.vector().of(0, -0.2, 0), itemStack);
             scene.idle(8);
 
             if (i == 3) {
@@ -421,7 +421,7 @@ public class FunnelScenes {
             }
 
             scene.world().modifyEntities(
-                ItemEntity.class, e -> {
+                LivingBlock.class, e -> {
                     if (e.getY() < 1) {
                         e.discard();
                     }

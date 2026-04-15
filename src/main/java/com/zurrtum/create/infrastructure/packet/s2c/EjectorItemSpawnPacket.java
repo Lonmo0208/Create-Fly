@@ -2,7 +2,7 @@ package com.zurrtum.create.infrastructure.packet.s2c;
 
 import com.zurrtum.create.AllPackets;
 import com.zurrtum.create.content.logistics.depot.EjectorBlockEntity;
-import com.zurrtum.create.content.logistics.depot.EjectorItemEntity;
+import com.zurrtum.create.content.logistics.depot.EjectorLivingBlock;
 import com.zurrtum.create.content.logistics.depot.EntityLauncher;
 import net.minecraft.core.Direction;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -23,7 +23,7 @@ public class EjectorItemSpawnPacket extends ClientboundAddEntityPacket {
         EjectorItemSpawnPacket::new
     );
 
-    public EjectorItemSpawnPacket(EjectorItemEntity entity, ServerEntity entityTrackerEntry) {
+    public EjectorItemSpawnPacket(EjectorLivingBlock entity, ServerEntity entityTrackerEntry) {
         super(entity, entityTrackerEntry);
         alive = entity.isAlive();
         hasLauncher = !alive && !(entity.level().getBlockEntity(entity.blockPosition()) instanceof EjectorBlockEntity);

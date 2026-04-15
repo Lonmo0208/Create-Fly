@@ -14,7 +14,7 @@ import net.minecraft.core.particles.ItemParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.livingblock.LivingBlock;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.level.Level;
@@ -49,7 +49,7 @@ public class PressingBehaviour extends BeltProcessingBehaviour {
 
         boolean tryProcessOnBelt(TransportedItemStack input, @Nullable List<ItemStack> outputList);
 
-        boolean tryProcessInWorld(ItemEntity itemEntity, boolean simulate);
+        boolean tryProcessInWorld(LivingBlock itemEntity, boolean simulate);
 
         boolean canProcessInBulk();
 
@@ -156,8 +156,8 @@ public class PressingBehaviour extends BeltProcessingBehaviour {
                         return;
                     }
 
-                    for (ItemEntity itemEntity : level.getEntitiesOfClass(
-                        ItemEntity.class,
+                    for (LivingBlock itemEntity : level.getEntitiesOfClass(
+                        LivingBlock.class,
                         new AABB(worldPosition.below()).deflate(.125f)
                     )) {
                         if (!itemEntity.isAlive() || !itemEntity.onGround()) {
@@ -248,7 +248,7 @@ public class PressingBehaviour extends BeltProcessingBehaviour {
         }
 
         for (Entity entity : level.getEntities(null, bb)) {
-            if (!(entity instanceof ItemEntity itemEntity)) {
+            if (!(entity instanceof LivingBlock itemEntity)) {
                 continue;
             }
             if (!entity.isAlive() || !entity.onGround()) {

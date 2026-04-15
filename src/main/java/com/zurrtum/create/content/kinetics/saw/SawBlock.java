@@ -18,7 +18,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.InsideBlockEffectApplier;
-import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.livingblock.LivingBlock;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
@@ -186,7 +186,7 @@ public class SawBlock extends DirectionalAxisKineticBlock implements IBE<SawBloc
         InsideBlockEffectApplier handler,
         boolean bl
     ) {
-        if (worldIn.isClientSide() || entityIn instanceof ItemEntity) {
+        if (worldIn.isClientSide() || entityIn instanceof LivingBlock) {
             return;
         }
         if (!new AABB(pos).deflate(.1f).intersects(entityIn.getBoundingBox())) {
@@ -209,7 +209,7 @@ public class SawBlock extends DirectionalAxisKineticBlock implements IBE<SawBloc
     @Override
     public void updateEntityMovementAfterFallOn(BlockGetter worldIn, Entity entityIn) {
         super.updateEntityMovementAfterFallOn(worldIn, entityIn);
-        if (!(entityIn instanceof ItemEntity)) {
+        if (!(entityIn instanceof LivingBlock)) {
             return;
         }
         if (entityIn.level().isClientSide()) {
@@ -222,7 +222,7 @@ public class SawBlock extends DirectionalAxisKineticBlock implements IBE<SawBloc
                 if (be.getSpeed() == 0) {
                     return;
                 }
-                be.insertItem((ItemEntity) entityIn);
+                be.insertItem((LivingBlock) entityIn);
             }
         );
     }

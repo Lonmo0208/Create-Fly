@@ -15,7 +15,7 @@ import com.zurrtum.create.foundation.utility.BlockHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
-import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.livingblock.LivingBlock;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.storage.ValueInput;
@@ -494,11 +494,12 @@ public class BeltInventory {
         float movementSpeed = Math.max(Math.abs(belt.getBeltMovementSpeed()), 1 / 8f);
         Vec3 outMotion = Vec3.atLowerCornerOf(belt.getBeltChainDirection()).scale(movementSpeed).add(0, 1 / 8f, 0);
         outPos = outPos.add(outMotion.normalize().scale(0.001));
-        ItemEntity entity = new ItemEntity(belt.getLevel(), outPos.x, outPos.y + 6 / 16f, outPos.z, ejected);
-        entity.setDeltaMovement(outMotion);
-        entity.setDefaultPickUpDelay();
-        entity.hurtMarked = true;
-        belt.getLevel().addFreshEntity(entity);
+        BlockPos pos = BlockPos.containing(outPos.x, outPos.y + 6 / 16f, outPos.z);
+        LivingBlock entity = LivingBlock.createAt(belt.getLevel(), pos, ejected);
+        if (entity != null) {
+            entity.setDeltaMovement(outMotion);
+            entity.hurtMarked = true;
+        }
     }
 
     public void ejectAll() {

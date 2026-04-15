@@ -107,7 +107,7 @@ public class DynamicBrush extends Brush {
                 BlockState stateAboveStateToReplace = world.getBlockState(currentPos.relative(targetFace));
 
                 // Criteria
-                if (stateToReplace.getDestroySpeed(world, currentPos) == -1) {
+                if (stateToReplace.getDestroySpeed() == -1) {
                     continue;
                 }
                 if (stateToReplace.getBlock() != state.getBlock() && !fuzzy) {

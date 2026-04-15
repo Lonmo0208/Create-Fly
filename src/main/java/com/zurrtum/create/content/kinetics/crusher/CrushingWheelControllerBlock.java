@@ -15,7 +15,7 @@ import net.minecraft.world.Container;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.InsideBlockEffectApplier;
-import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.livingblock.LivingBlock;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.*;
@@ -122,9 +122,9 @@ public class CrushingWheelControllerBlock extends DirectionalBlock implements IB
         if (be.crushingspeed == 0) {
             return;
         }
-        //		if (entityIn instanceof ItemEntity)
-        //			((ItemEntity) entityIn).setPickUpDelay(10);
-        if (entityIn instanceof ItemEntity) {
+        //		if (entityIn instanceof LivingBlock)
+        //			((LivingBlock) entityIn).setPickUpDelay(10);
+        if (entityIn instanceof LivingBlock) {
             Optional<BlockPos> value = AllSynchedDatas.BYPASS_CRUSHING_WHEEL.get(entityIn);
             if (value.isPresent() && pos.equals(value.get())) {
                 return;
@@ -232,7 +232,7 @@ public class CrushingWheelControllerBlock extends DirectionalBlock implements IB
             return standardShape;
         }
 
-        if (entity instanceof ItemEntity && state.getValue(FACING) != Direction.UP) {
+        if (entity instanceof LivingBlock && state.getValue(FACING) != Direction.UP) {
             Optional<BlockPos> value = AllSynchedDatas.BYPASS_CRUSHING_WHEEL.get(entity);
             if (value.isPresent() && pos.equals(value.get())) // Allow output items to land on top of the block rather
             {

@@ -17,7 +17,7 @@ import com.zurrtum.create.content.logistics.depot.EjectorBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.livingblock.LivingBlock;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.phys.AABB;
@@ -110,7 +110,7 @@ public class EjectorScenes {
             .pointAt(util.vector().topOf(ejectorPos)).placeNearTarget();
         scene.idle(60);
 
-        scene.world().modifyEntities(ItemEntity.class, Entity::discard);
+        scene.world().modifyEntities(LivingBlock.class, Entity::discard);
         scene.world().hideSection(targetS, Direction.SOUTH);
         scene.idle(15);
         scene.world().restoreBlocks(targetS);
@@ -166,7 +166,7 @@ public class EjectorScenes {
         scene.world().hideSection(util.select().fromTo(5, 1, 0, 4, 1, 1), Direction.UP);
         scene.world().hideSection(util.select().position(5, 0, 1), Direction.DOWN);
         scene.idle(30);
-        scene.world().modifyEntities(ItemEntity.class, Entity::discard);
+        scene.world().modifyEntities(LivingBlock.class, Entity::discard);
 
         scene.addKeyframe();
         ElementLink<ParrotElement> birb = scene.special()
@@ -274,9 +274,9 @@ public class EjectorScenes {
         ItemStack copper = new ItemStack(Items.COPPER_INGOT);
 
         for (int i = 0; i < 3; i++) {
-            scene.world().createItemEntity(topOf, util.vector().of(0, 0.1, 0), copper);
+            scene.world().createLivingBlock(topOf, util.vector().of(0, 0.1, 0), copper);
             scene.idle(12);
-            scene.world().modifyEntities(ItemEntity.class, Entity::discard);
+            scene.world().modifyEntities(LivingBlock.class, Entity::discard);
             scene.world().createItemOnBeltLike(ejectorPos, Direction.UP, copper);
             scene.idle(20);
             if (i == 1) {
@@ -317,9 +317,9 @@ public class EjectorScenes {
 
         Selection observerRedstone = util.select().fromTo(4, 1, 1, 4, 1, 0);
         for (int i = 0; i < 6; i++) {
-            scene.world().createItemEntity(topOf, util.vector().of(0, 0.1, 0), copper);
+            scene.world().createLivingBlock(topOf, util.vector().of(0, 0.1, 0), copper);
             scene.idle(12);
-            scene.world().modifyEntities(ItemEntity.class, Entity::discard);
+            scene.world().modifyEntities(LivingBlock.class, Entity::discard);
             scene.world().createItemOnBeltLike(ejectorPos, Direction.UP, copper);
             scene.idle(1);
             scene.world().toggleRedstonePower(observerRedstone);

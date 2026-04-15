@@ -17,7 +17,7 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
-import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.livingblock.LivingBlock;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -342,16 +342,13 @@ public class BezierConnection implements Iterable<BezierConnection.Segment> {
                 continue;
             }
             Vec3 v = VecHelper.offsetRandomly(segment.position, level.getRandom(), .125f).add(origin);
-            ItemEntity entity = new ItemEntity(level, v.x, v.y, v.z, new ItemStack(getMaterial()));
-            entity.setDefaultPickUpDelay();
-            level.addFreshEntity(entity);
+            BlockPos pos = BlockPos.containing(v);
+            LivingBlock.createAt(level, pos, new ItemStack(getMaterial()));
             if (!hasGirder) {
                 continue;
             }
             for (int i = 0; i < 2; i++) {
-                entity = new ItemEntity(level, v.x, v.y, v.z, AllItems.METAL_GIRDER.getDefaultInstance());
-                entity.setDefaultPickUpDelay();
-                level.addFreshEntity(entity);
+                LivingBlock.createAt(level, pos, AllItems.METAL_GIRDER.getDefaultInstance());
             }
         }
     }

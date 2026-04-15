@@ -22,7 +22,7 @@ import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.livingblock.LivingBlock;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
@@ -645,10 +645,13 @@ public class PonderSceneBuilder implements SceneBuilder {
         }
 
         @Override
-        public ElementLink<EntityElement> createItemEntity(Vec3 location, Vec3 motion, ItemStack stack) {
+        public ElementLink<EntityElement> createLivingBlock(Vec3 location, Vec3 motion, ItemStack stack) {
             return createEntity(world -> {
-                ItemEntity itemEntity = new ItemEntity(world, location.x, location.y, location.z, stack);
-                itemEntity.setDeltaMovement(motion);
+                BlockPos pos = BlockPos.containing(location.x, location.y, location.z);
+                LivingBlock itemEntity = LivingBlock.createAt(world, pos, stack);
+                if (itemEntity != null) {
+                    itemEntity.setDeltaMovement(motion);
+                }
                 return itemEntity;
             });
         }

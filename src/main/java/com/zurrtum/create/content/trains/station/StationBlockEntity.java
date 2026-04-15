@@ -46,7 +46,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.livingblock.LivingBlock;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
@@ -341,7 +341,7 @@ public class StationBlockEntity extends SmartBlockEntity implements Transformabl
         )).getBlock() instanceof AbstractBogeyBlock<?> bogey && bogey.canBeUpsideDown());
 
         BlockPos targetPos = upsideDown ? pos.offset(down) : pos.offset(up);
-        if (level.getBlockState(targetPos).getDestroySpeed(level, targetPos) == -1) {
+        if (level.getBlockState(targetPos).getDestroySpeed() == -1) {
             return false;
         }
 
@@ -494,10 +494,11 @@ public class StationBlockEntity extends SmartBlockEntity implements Transformabl
             return;
         }
 
-        Vec3 v = VecHelper.getCenterOf(getBlockPos());
-        ItemEntity itemEntity = new ItemEntity(getLevel(), v.x, v.y, v.z, schedule);
-        itemEntity.setDeltaMovement(Vec3.ZERO);
-        getLevel().addFreshEntity(itemEntity);
+        BlockPos pos = getBlockPos();
+        LivingBlock itemEntity = LivingBlock.createAt(getLevel(), pos, schedule);
+        if (itemEntity != null) {
+            itemEntity.setDeltaMovement(Vec3.ZERO);
+        }
     }
 
     public void updateMapColor(int color) {

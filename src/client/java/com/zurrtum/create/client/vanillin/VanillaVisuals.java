@@ -63,7 +63,7 @@ public class VanillaVisuals {
         itemFrame(EntityType.ITEM_FRAME).apply(EXPERIMENTAL);
         itemFrame(EntityType.GLOW_ITEM_FRAME).apply(EXPERIMENTAL);
 
-        composable(EntityType.ITEM).apply(VanillaVisuals::commonElements).with(element(VisualElements.FIRE).build())
+        composable(EntityType.LIVING_BLOCK).apply(VanillaVisuals::commonElements).with(element(VisualElements.FIRE).build())
             .with(element(VisualElements.SHADOW).configure(new ShadowElement.Config(0.15f, 0.75f)).build())
             .with(element(VisualElements.ITEM_ENTITY).build())
             .shouldVisualize(((ctx, entity) -> ItemVisual.isSupported(entity))).build()

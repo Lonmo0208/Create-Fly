@@ -18,7 +18,7 @@ import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.RegistryOps;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.livingblock.LivingBlock;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
@@ -113,7 +113,7 @@ public class FanScenes {
         ItemStack smelted = new ItemStack(Items.GOLD_INGOT);
 
         ElementLink<EntityElement> entityLink = scene.world()
-            .createItemEntity(util.vector().centerOf(blockPos.west(2).above(2)), util.vector().of(0, 0.1, 0), stack);
+            .createLivingBlock(util.vector().centerOf(blockPos.west(2).above(2)), util.vector().of(0, 0.1, 0), stack);
         scene.idle(15);
         scene.world().modifyEntity(entityLink, e -> e.setDeltaMovement(-0.2f, 0, 0));
         Vec3 itemVec = util.vector().blockSurface(util.grid().at(1, 1, 2), Direction.EAST).add(0.1, 0, 0);
@@ -130,11 +130,11 @@ public class FanScenes {
             .text("Items caught in the area will be smelted");
 
         scene.idle(60);
-        scene.world().modifyEntities(ItemEntity.class, ie -> ie.setItem(smelted));
+        scene.world().modifyEntities(LivingBlock.class, ie -> ie.setItemStack(smelted));
         scene.idle(40);
         scene.overlay().showControls(itemVec, Pointing.DOWN, 20).withItem(smelted);
         scene.idle(20);
-        scene.world().modifyEntities(ItemEntity.class, Entity::discard);
+        scene.world().modifyEntities(LivingBlock.class, Entity::discard);
         scene.idle(20);
 
         scene.overlay().showText(80).colored(PonderPalette.RED).pointAt(itemVec).placeNearTarget()
@@ -177,7 +177,7 @@ public class FanScenes {
         ItemStack washed = new ItemStack(Items.GOLD_NUGGET, 16);
 
         entityLink = scene.world()
-            .createItemEntity(util.vector().centerOf(blockPos.west(2).above(2)), util.vector().of(0, 0.1, 0), stack);
+            .createLivingBlock(util.vector().centerOf(blockPos.west(2).above(2)), util.vector().of(0, 0.1, 0), stack);
         scene.idle(15);
         scene.world().modifyEntity(entityLink, e -> e.setDeltaMovement(-0.2f, 0, 0));
         scene.overlay().showControls(itemVec, Pointing.DOWN, 20).withItem(stack);
@@ -193,10 +193,10 @@ public class FanScenes {
             .text("Some interesting new processing can be done with it");
 
         scene.idle(60);
-        scene.world().modifyEntities(ItemEntity.class, ie -> ie.setItem(washed));
+        scene.world().modifyEntities(LivingBlock.class, ie -> ie.setItemStack(washed));
         scene.overlay().showControls(itemVec, Pointing.DOWN, 20).withItem(washed);
         scene.idle(20);
-        scene.world().modifyEntities(ItemEntity.class, Entity::discard);
+        scene.world().modifyEntities(LivingBlock.class, Entity::discard);
         scene.idle(20);
 
         scene.overlay().showText(100).colored(PonderPalette.RED).pointAt(util.vector().topOf(blockPos.east()))

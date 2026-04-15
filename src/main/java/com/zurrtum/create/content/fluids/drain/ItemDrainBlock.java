@@ -20,7 +20,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.livingblock.LivingBlock;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
@@ -108,7 +108,7 @@ public class ItemDrainBlock extends Block implements IWrenchable, IBE<ItemDrainB
     @Override
     public void updateEntityMovementAfterFallOn(BlockGetter worldIn, Entity entityIn) {
         super.updateEntityMovementAfterFallOn(worldIn, entityIn);
-        if (!(entityIn instanceof ItemEntity itemEntity)) {
+        if (!(entityIn instanceof LivingBlock itemEntity)) {
             return;
         }
         if (!entityIn.isAlive()) {
@@ -128,8 +128,8 @@ public class ItemDrainBlock extends Block implements IWrenchable, IBE<ItemDrainB
         }
         Vec3 deltaMovement = entityIn.getDeltaMovement().multiply(1, 0, 1).normalize();
         Direction nearest = Direction.getApproximateNearest(deltaMovement.x, deltaMovement.y, deltaMovement.z);
-        ItemStack remainder = inputBehaviour.handleInsertion(itemEntity.getItem(), nearest, false);
-        itemEntity.setItem(remainder);
+        ItemStack remainder = inputBehaviour.handleInsertion(itemEntity.getItemStack(), nearest, false);
+        itemEntity.setItemStack(remainder);
         if (remainder.isEmpty()) {
             itemEntity.discard();
         }

@@ -502,7 +502,7 @@ public class DeployerBlockEntity extends KineticBlockEntity implements Clearable
         }
         ServerPlayer serverPlayer = player.cast();
         serverPlayer.getInventory().dropAll();
-        overflowItems.forEach(itemstack -> serverPlayer.drop(itemstack, true, false));
+        overflowItems.forEach(itemstack -> serverPlayer.drop(itemstack, true));
         serverPlayer.discard();
         player = null;
     }

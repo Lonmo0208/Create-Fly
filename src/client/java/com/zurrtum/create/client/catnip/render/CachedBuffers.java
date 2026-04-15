@@ -10,15 +10,20 @@ import net.minecraft.util.Util;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import org.apache.commons.lang3.tuple.Pair;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.function.Function;
 import java.util.function.Supplier;
 
 public class CachedBuffers {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(CachedBuffers.class);
+
     public static final Compartment<BlockState> GENERIC_BLOCK = new Compartment<>();
     public static final Compartment<PartialModel> PARTIAL = new Compartment<>();
     public static final Compartment<Pair<Direction, PartialModel>> DIRECTIONAL_PARTIAL = new Compartment<>();
+
     private static final Function<Direction, Supplier<PoseStack>> ROTATE_TO_FACE = Util.memoize((facing) -> () -> {
         PoseStack stack = new PoseStack();
         TransformStack.of(stack).center().rotateYDegrees(AngleHelper.horizontalAngle(facing))
@@ -81,6 +86,10 @@ public class CachedBuffers {
     }
 
     public static SuperByteBuffer partialFacing(PartialModel partial, BlockState referenceState, Direction facing) {
+        if (facing == null) {
+            LOGGER.warn("Null facing passed to partialFacing, defaulting to UP");
+            facing = Direction.UP;
+        }
         return partialDirectional(partial, referenceState, facing, ROTATE_TO_FACE.apply(facing));
     }
 
@@ -89,6 +98,10 @@ public class CachedBuffers {
         BlockState referenceState,
         Direction facing
     ) {
+        if (facing == null) {
+            LOGGER.warn("Null facing passed to partialFacingVertical, defaulting to UP");
+            facing = Direction.UP;
+        }
         return partialDirectional(partial, referenceState, facing, ROTATE_TO_FACE_VERTICAL.apply(facing));
     }
 
@@ -98,6 +111,10 @@ public class CachedBuffers {
         Direction dir,
         Supplier<PoseStack> modelTransform
     ) {
+        if (dir == null) {
+            LOGGER.warn("Null direction passed to partialDirectional, defaulting to UP");
+            dir = Direction.UP;
+        }
         return SuperByteBufferCache.getInstance().get(
             DIRECTIONAL_PARTIAL,
             Pair.of(dir, partial),
@@ -106,10 +123,18 @@ public class CachedBuffers {
     }
 
     public static Supplier<PoseStack> rotateToFace(Direction facing) {
+        if (facing == null) {
+            LOGGER.warn("Null facing passed to rotateToFace, defaulting to UP");
+            facing = Direction.UP;
+        }
         return ROTATE_TO_FACE.apply(facing);
     }
 
     public static Supplier<PoseStack> rotateToFaceVertical(Direction facing) {
+        if (facing == null) {
+            LOGGER.warn("Null facing passed to rotateToFaceVertical, defaulting to UP");
+            facing = Direction.UP;
+        }
         return ROTATE_TO_FACE_VERTICAL.apply(facing);
     }
 }

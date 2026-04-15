@@ -56,7 +56,7 @@ accessible field net/minecraft/client/renderer/block/BlockModelResolver modelMan
 accessible field net/minecraft/client/renderer/block/BlockModelSet blockModelByStateCache Ljava/util/Map;
 accessible field net/minecraft/client/renderer/blockentity/state/BlockEntityRenderState blockState Lnet/minecraft/world/level/block/state/BlockState;
 accessible field net/minecraft/client/renderer/entity/AbstractMinecartRenderer MINECART_LOCATION Lnet/minecraft/resources/Identifier;
-accessible field net/minecraft/client/renderer/entity/ItemEntityRenderer random Lnet/minecraft/util/RandomSource;
+
 accessible field net/minecraft/client/renderer/feature/CustomFeatureRenderer$Storage solidCustomGeometrySubmits Ljava/util/Map;
 accessible field net/minecraft/client/renderer/feature/CustomFeatureRenderer$Storage translucentCustomGeometrySubmits Ljava/util/Map;
 accessible field net/minecraft/client/renderer/feature/ModelFeatureRenderer$Storage solidModelSubmits Ljava/util/Map;
@@ -110,7 +110,7 @@ accessible field net/minecraft/world/entity/Entity DATA_POSE Lnet/minecraft/netw
 accessible field net/minecraft/world/entity/Entity removalReason Lnet/minecraft/world/entity/Entity$RemovalReason;
 accessible field net/minecraft/world/entity/InterpolationHandler interpolationData Lnet/minecraft/world/entity/InterpolationHandler$InterpolationData;
 accessible field net/minecraft/world/entity/InterpolationHandler$InterpolationData steps I
-accessible field net/minecraft/world/entity/item/ItemEntity age I
+
 accessible field net/minecraft/world/entity/LivingEntity lastEquipmentItems Ljava/util/Map;
 accessible field net/minecraft/world/entity/Mob targetSelector Lnet/minecraft/world/entity/ai/goal/GoalSelector;
 accessible field net/minecraft/world/entity/vehicle/minecart/MinecartFurnace fuel I
@@ -194,7 +194,7 @@ accessible method net/minecraft/world/entity/animal/parrot/Parrot setVariant (Ln
 accessible method net/minecraft/world/entity/decoration/ItemFrame getFrameItemStack ()Lnet/minecraft/world/item/ItemStack;
 accessible method net/minecraft/world/entity/Entity setLevel (Lnet/minecraft/world/level/Level;)V
 accessible method net/minecraft/world/entity/item/FallingBlockEntity <init> (Lnet/minecraft/world/level/Level;DDDLnet/minecraft/world/level/block/state/BlockState;)V
-accessible method net/minecraft/world/entity/item/ItemEntity addAdditionalSaveData (Lnet/minecraft/world/level/storage/ValueOutput;)V
+
 accessible method net/minecraft/world/entity/LivingEntity setLastHurtByPlayer (Lnet/minecraft/world/entity/EntityReference;I)V
 accessible method net/minecraft/world/entity/vehicle/minecart/AbstractMinecart getMaxSpeed (Lnet/minecraft/server/level/ServerLevel;)D
 accessible method net/minecraft/world/item/alchemy/PotionBrewing isContainer (Lnet/minecraft/world/item/ItemStack;)Z
@@ -225,7 +225,7 @@ extendable method net/minecraft/world/entity/Entity isLocalInstanceAuthoritative
 extendable method net/minecraft/world/entity/Entity moveOrInterpolateTo (Lnet/minecraft/world/phys/Vec3;FF)V
 mutable field net/minecraft/client/KeyMapping defaultKey Lcom/mojang/blaze3d/platform/InputConstants$Key;
 mutable field net/minecraft/client/particle/QuadParticleGroup particleTypeRenderState Lnet/minecraft/client/renderer/state/level/QuadParticleRenderState;
-mutable field net/minecraft/world/entity/item/ItemEntity bobOffs F
+
 mutable field net/minecraft/world/item/context/BlockPlaceContext relativePos Lnet/minecraft/core/BlockPos;
 mutable field net/minecraft/world/item/CreativeModeTab column I
 mutable field net/minecraft/world/item/CreativeModeTab row Lnet/minecraft/world/item/CreativeModeTab$Row;

@@ -9,7 +9,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.livingblock.LivingBlock;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.ClipContext.Block;
@@ -106,7 +106,7 @@ public class NozzleBlockEntity extends SmartBlockEntity {
                 continue;
             }
 
-            float factor = (entity instanceof ItemEntity) ? 1 / 128f : 1 / 32f;
+            float factor = (entity instanceof LivingBlock) ? 1 / 128f : 1 / 32f;
             Vec3 pushVec = diff.normalize().scale((range - distance) * (pushing ? 1 : -1));
             entity.setDeltaMovement(entity.getDeltaMovement().add(pushVec.scale(factor)));
             entity.fallDistance = 0;

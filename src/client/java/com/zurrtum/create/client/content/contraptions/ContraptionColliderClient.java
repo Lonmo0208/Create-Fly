@@ -31,7 +31,7 @@ import net.minecraft.tags.BlockTags;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.MobCategory;
-import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.livingblock.LivingBlock;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
@@ -322,7 +322,7 @@ public class ContraptionColliderClient {
                     if (canWalk) {
                         entity.setOnGround(true);
                     }
-                    if (entity instanceof ItemEntity) {
+                    if (entity instanceof LivingBlock) {
                         entityMotion = entityMotion.multiply(.5f, 1, .5f);
                     }
                 }
@@ -380,7 +380,7 @@ public class ContraptionColliderClient {
         if (cce.collidingEntities.containsKey(entity)) {
             return entityMotion;
         }
-        if (entity instanceof ItemEntity) {
+        if (entity instanceof LivingBlock) {
             return entityMotion;
         }
         if (cce.nonDamageTicks != 0) {

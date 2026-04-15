@@ -17,7 +17,7 @@ import net.minecraft.world.Container;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.livingblock.LivingBlock;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
@@ -118,7 +118,7 @@ public class SharedDepotBlockMethods {
     }
 
     public static void onLanded(BlockGetter worldIn, Entity entityIn) {
-        ItemStack asItem = ItemHelper.fromItemEntity(entityIn);
+        ItemStack asItem = ItemHelper.fromLivingBlock(entityIn);
         if (asItem.isEmpty()) {
             return;
         }
@@ -137,8 +137,8 @@ public class SharedDepotBlockMethods {
         }
 
         ItemStack remainder = inputBehaviour.handleInsertion(asItem, Direction.DOWN, false);
-        if (entityIn instanceof ItemEntity) {
-            ((ItemEntity) entityIn).setItem(remainder);
+        if (entityIn instanceof LivingBlock) {
+            ((LivingBlock) entityIn).setItemStack(remainder);
         }
         if (remainder.isEmpty()) {
             entityIn.discard();

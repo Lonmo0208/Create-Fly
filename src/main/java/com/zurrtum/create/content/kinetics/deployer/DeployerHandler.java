@@ -32,7 +32,7 @@ import net.minecraft.world.entity.EntitySelector;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
-import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.livingblock.LivingBlock;
 import net.minecraft.world.entity.npc.villager.AbstractVillager;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.food.FoodProperties;
@@ -64,8 +64,8 @@ import org.jspecify.annotations.Nullable;
 import java.util.*;
 
 public class DeployerHandler {
-    private static final Map<BlockPos, List<ItemEntity>> CAPTURED_BLOCK_DROPS = new HashMap<>();
-    public static final Map<BlockPos, List<ItemEntity>> CAPTURED_BLOCK_DROPS_VIEW = Collections.unmodifiableMap(
+    private static final Map<BlockPos, List<LivingBlock>> CAPTURED_BLOCK_DROPS = new HashMap<>();
+    public static final Map<BlockPos, List<LivingBlock>> CAPTURED_BLOCK_DROPS_VIEW = Collections.unmodifiableMap(
         CAPTURED_BLOCK_DROPS);
 
     private static final class ItemUseWorld extends WrappedLevel implements ServerLevelAccessor {
@@ -488,12 +488,12 @@ public class DeployerHandler {
         InteractionHand hand,
         BlockHitResult ray
     ) {
-        List<ItemEntity> drops = new ArrayList<>(4);
+        List<LivingBlock> drops = new ArrayList<>(4);
         CAPTURED_BLOCK_DROPS.put(pos, drops);
         try {
             InteractionResult result = BlockHelper.invokeUse(state, world, player.cast(), hand, ray);
-            for (ItemEntity itemEntity : drops) {
-                player.cast().getInventory().placeItemBackInInventory(itemEntity.getItem());
+            for (LivingBlock itemEntity : drops) {
+                player.cast().getInventory().placeItemBackInInventory(itemEntity.getItemStack());
             }
             return result;
         } finally {

@@ -17,7 +17,6 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.component.DataComponents;
-import net.minecraft.core.dispenser.BlockSource;
 import net.minecraft.core.dispenser.DefaultDispenseItemBehavior;
 import net.minecraft.core.dispenser.DispenseItemBehavior;
 import net.minecraft.nbt.CompoundTag;
@@ -41,13 +40,11 @@ import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BaseRailBlock;
 import net.minecraft.world.level.block.DispenserBlock;
-import net.minecraft.world.level.block.LevelEvent;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.RailShape;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate.StructureBlockInfo;
 import net.minecraft.world.level.storage.TagValueInput;
 import net.minecraft.world.level.storage.TagValueOutput;
-import net.minecraft.world.phys.Vec3;
 import org.apache.commons.lang3.tuple.MutablePair;
 import org.jspecify.annotations.Nullable;
 
@@ -87,64 +84,6 @@ public class MinecartContraptionItem extends Item {
     private static final DispenseItemBehavior DISPENSER_BEHAVIOR = new DefaultDispenseItemBehavior() {
         private final DefaultDispenseItemBehavior behaviourDefaultDispenseItem = new DefaultDispenseItemBehavior();
 
-        @Override
-        public ItemStack execute(BlockSource source, ItemStack stack) {
-            Direction direction = source.state().getValue(DispenserBlock.FACING);
-            ServerLevel world = source.level();
-            Vec3 vec3 = source.center();
-            double d0 = vec3.x() + (double) direction.getStepX() * 1.125D;
-            double d1 = Math.floor(vec3.y()) + (double) direction.getStepY();
-            double d2 = vec3.z() + (double) direction.getStepZ() * 1.125D;
-            BlockPos blockpos = source.pos().relative(direction);
-            BlockState blockstate = world.getBlockState(blockpos);
-            RailShape railshape = blockstate.getBlock() instanceof BaseRailBlock abstractRailBlock ? blockstate.getValue(
-                abstractRailBlock.getShapeProperty()) : RailShape.NORTH_SOUTH;
-            double d3;
-            if (blockstate.is(BlockTags.RAILS)) {
-                if (railshape.isSlope()) {
-                    d3 = 0.6D;
-                } else {
-                    d3 = 0.1D;
-                }
-            } else {
-                if (!blockstate.isAir() || !world.getBlockState(blockpos.below()).is(BlockTags.RAILS)) {
-                    return this.behaviourDefaultDispenseItem.dispense(source, stack);
-                }
-
-                BlockState blockstate1 = world.getBlockState(blockpos.below());
-                RailShape railshape1 = blockstate1.getBlock() instanceof BaseRailBlock abstractRailBlock ? blockstate1.getValue(
-                    abstractRailBlock.getShapeProperty()) : RailShape.NORTH_SOUTH;
-                if (direction != Direction.DOWN && railshape1.isSlope()) {
-                    d3 = -0.4D;
-                } else {
-                    d3 = -0.9D;
-                }
-            }
-
-            AbstractMinecart abstractminecartentity = AbstractMinecart.createMinecart(
-                world,
-                d0,
-                d1 + d3,
-                d2,
-                ((MinecartContraptionItem) stack.getItem()).minecartType,
-                EntitySpawnReason.SPAWN_ITEM_USE,
-                stack,
-                null
-            );
-            if (stack.has(DataComponents.CUSTOM_NAME)) {
-                abstractminecartentity.setCustomName(stack.getHoverName());
-            }
-            world.addFreshEntity(abstractminecartentity);
-            addContraptionToMinecart(world, stack, abstractminecartentity, direction);
-
-            stack.shrink(1);
-            return stack;
-        }
-
-        @Override
-        protected void playSound(BlockSource source) {
-            source.level().levelEvent(LevelEvent.SOUND_DISPENSER_DISPENSE, source.pos(), 0);
-        }
     };
 
     // Taken and adjusted from MinecartItem

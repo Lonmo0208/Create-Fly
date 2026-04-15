@@ -109,7 +109,7 @@ public class RollerMovementBehaviour extends BlockBreakingMovementBehaviour {
         BlockPos argMax = null;
         double max = -1;
         for (BlockPos toBreak : positionsToBreak) {
-            float hardness = context.world.getBlockState(toBreak).getDestroySpeed(world, toBreak);
+            float hardness = context.world.getBlockState(toBreak).getDestroySpeed();
             if (hardness < max) {
                 continue;
             }

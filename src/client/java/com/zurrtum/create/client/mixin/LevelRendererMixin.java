@@ -218,23 +218,32 @@ public abstract class LevelRendererMixin {
 //        SodiumCompat.markSpriteActive(minecraft);
 //    }
 
-    @Inject(method = "extractBlockDestroyAnimation(Lnet/minecraft/client/Camera;Lnet/minecraft/client/renderer/state/level/LevelRenderState;)V", at = @At("HEAD"))
+    @Inject(
+            method = "extractBlockDestroyAnimation(Lnet/minecraft/client/Camera;Lnet/minecraft/client/renderer/state/level/LevelRenderState;F)V",
+            at = @At("HEAD")
+    )
     private void init(
-        Camera camera,
-        LevelRenderState levelRenderState,
-        CallbackInfo ci,
-        @Share("models") LocalRef<BlockStateModelSet> ref
+            Camera camera,
+            LevelRenderState levelRenderState,
+            float partialTicks,
+            CallbackInfo ci,
+            @Share("models") LocalRef<BlockStateModelSet> ref
     ) {
         ref.set(minecraft.getModelManager().getBlockStateModelSet());
     }
 
-    @ModifyArg(method = "extractBlockDestroyAnimation(Lnet/minecraft/client/Camera;Lnet/minecraft/client/renderer/state/level/LevelRenderState;)V", at = @At(value = "INVOKE", target = "Ljava/util/List;add(Ljava/lang/Object;)Z"))
+    @ModifyArg(
+            method = "extractBlockDestroyAnimation(Lnet/minecraft/client/Camera;Lnet/minecraft/client/renderer/state/level/LevelRenderState;F)V",
+            at = @At(value = "INVOKE", target = "Ljava/util/List;add(Ljava/lang/Object;)Z")
+    )
     private <E> E addInfo(E e, @Share("models") LocalRef<BlockStateModelSet> ref) {
         BlockBreakingRenderState state = (BlockBreakingRenderState) e;
         BlockState blockState = state.blockState();
         BlockStateModel model = ref.get().get(blockState);
         if (WrapperBlockStateModel.unwrapCompat(model) instanceof WrapperBlockStateModel wrapper) {
-            BlockPos pos = state.blockPos();
+            Vec3 posVec = state.pos();
+            BlockPos pos = BlockPos.containing(posVec);
+            ClientLevel level = minecraft.level;
             model = wrapper.extractRenderModel(level, pos, blockState, blockState.getSeed(pos));
         }
         ((BreakingRenderStateInfo) e).create$setRenderModel(model);

@@ -143,7 +143,7 @@ public class EjectorBlock extends HorizontalKineticBlock implements IBE<EjectorB
         if (entityIn.isSuppressingBounce()) {
             return;
         }
-        if (!ItemHelper.fromItemEntity(entityIn).isEmpty()) {
+        if (!ItemHelper.fromLivingBlock(entityIn).isEmpty()) {
             SharedDepotBlockMethods.onLanded(worldIn, entityIn);
             return;
         }

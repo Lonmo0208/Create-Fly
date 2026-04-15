@@ -19,14 +19,15 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.Projectile;
+import net.minecraft.world.flag.FeatureFlagSet;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ProjectileWeaponItem;
 import net.minecraft.world.item.TooltipFlag;
@@ -40,7 +41,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import org.jspecify.annotations.Nullable;
 
-import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
@@ -62,32 +62,6 @@ public class PotatoCannonItem extends ProjectileWeaponItem implements SwingContr
 
         return PotatoCannonProjectileType.getTypeForItem(player.level().registryAccess(), ammoStack.getItem())
             .map(r -> new Ammo(ammoStack, r.value())).orElse(null);
-    }
-
-    @Override
-    protected void shootProjectile(
-        LivingEntity shooter,
-        Projectile projectile,
-        int index,
-        float velocity,
-        float inaccuracy,
-        float angle,
-        @Nullable LivingEntity target
-    ) {
-    }
-
-    @Override
-    protected void shoot(
-        ServerLevel level,
-        LivingEntity shooter,
-        InteractionHand hand,
-        ItemStack weapon,
-        List<ItemStack> projectileItems,
-        float velocity,
-        float inaccuracy,
-        boolean isCrit,
-        @Nullable LivingEntity target
-    ) {
     }
 
     @Override
@@ -274,6 +248,11 @@ public class PotatoCannonItem extends ProjectileWeaponItem implements SwingContr
     }
 
     @Override
+    protected void shootProjectile(LivingEntity shooter, Projectile projectileEntity, int index, float power, float uncertainty, float angle, @Nullable Entity targetOverrride) {
+
+    }
+
+    @Override
     public boolean isBarVisible(ItemStack stack) {
         return BacktankUtil.isBarVisible(stack, maxUses());
     }
@@ -295,6 +274,11 @@ public class PotatoCannonItem extends ProjectileWeaponItem implements SwingContr
     @Override
     public boolean onEntitySwing(ItemStack stack, LivingEntity entity, InteractionHand hand) {
         return true;
+    }
+
+    @Override
+    public boolean isEnabled(FeatureFlagSet enabledFeatures) {
+        return super.isEnabled(enabledFeatures);
     }
 
     public record Ammo(ItemStack stack, PotatoCannonProjectileType type) {

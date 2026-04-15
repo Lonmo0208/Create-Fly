@@ -9,21 +9,12 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.client.renderer.block.BlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Mixin(AbstractBlockRenderContext.class)
 public class AbstractBlockRenderContextMixin {
-    @WrapOperation(method = "prepareAoInfo(Z)V", at = @At(value = "INVOKE", target = "Lnet/caffeinemc/mods/sodium/client/services/PlatformBlockAccess;getLightEmission(Lnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/world/level/BlockAndTintGetter;Lnet/minecraft/core/BlockPos;)I"))
-    private int getLightEmission(
-        PlatformBlockAccess instance,
-        BlockState blockState,
-        BlockAndTintGetter blockRenderView,
-        BlockPos pos,
-        Operation<Integer> original
-    ) {
-        if (blockState.getBlock() instanceof LightControlBlock block) {
-            return block.getLuminance(blockRenderView, pos);
-        }
-        return original.call(instance, blockState, blockRenderView, pos);
-    }
+
 }

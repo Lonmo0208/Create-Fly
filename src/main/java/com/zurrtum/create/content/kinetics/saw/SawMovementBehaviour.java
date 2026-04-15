@@ -9,7 +9,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.Container;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.livingblock.LivingBlock;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
@@ -77,9 +77,11 @@ public class SawMovementBehaviour extends BlockBreakingMovementBehaviour {
         Vec3 dropPos = VecHelper.getCenterOf(pos);
         float distance = context.position == null ? 1 : (float) dropPos.distanceTo(context.position);
         stack.setCount(count - insert);
-        ItemEntity entity = new ItemEntity(world, dropPos.x, dropPos.y, dropPos.z, stack);
-        entity.setDeltaMovement(context.relativeMotion.scale(distance / 20f));
-        world.addFreshEntity(entity);
+        BlockPos blockPos = BlockPos.containing(dropPos.x, dropPos.y, dropPos.z);
+        LivingBlock entity = LivingBlock.createAt(world, blockPos, stack);
+        if (entity != null) {
+            entity.setDeltaMovement(context.relativeMotion.scale(distance / 20f));
+        }
     }
 
     @Override

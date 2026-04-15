@@ -31,7 +31,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.Clearable;
 import net.minecraft.world.Containers;
-import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.livingblock.LivingBlock;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackTemplate;
@@ -229,9 +229,11 @@ public class SawBlockEntity extends BlockBreakingKineticBlockEntity implements C
             if (stack.isEmpty()) {
                 continue;
             }
-            ItemEntity entityIn = new ItemEntity(level, outPos.x, outPos.y, outPos.z, inventory.onExtract(stack));
-            entityIn.setDeltaMovement(outMotion);
-            level.addFreshEntity(entityIn);
+            BlockPos pos = BlockPos.containing(outPos);
+            LivingBlock entityIn = LivingBlock.createAt(level, pos, inventory.onExtract(stack));
+            if (entityIn != null) {
+                entityIn.setDeltaMovement(outMotion);
+            }
         }
         inventory.clearContent();
         level.updateNeighbourForOutputSignal(worldPosition, getBlockState().getBlock());
@@ -426,7 +428,7 @@ public class SawBlockEntity extends BlockBreakingKineticBlockEntity implements C
         return first == null ? null : Pair.of(first, null);
     }
 
-    public void insertItem(ItemEntity entity) {
+    public void insertItem(LivingBlock entity) {
         if (!canProcess()) {
             return;
         }
@@ -442,14 +444,14 @@ public class SawBlockEntity extends BlockBreakingKineticBlockEntity implements C
 
         inventory.clearContent();
 
-        ItemStack stack = entity.getItem();
+        ItemStack stack = entity.getItemStack();
         int count = stack.getCount();
         int insert = inventory.insert(stack);
         if (insert == count) {
             entity.discard();
         } else if (insert != 0) {
             stack.shrink(insert);
-            entity.setItem(stack);
+            entity.setItemStack(stack);
         }
     }
 
@@ -516,9 +518,11 @@ public class SawBlockEntity extends BlockBreakingKineticBlockEntity implements C
     public void dropItemFromCutTree(BlockPos pos, ItemStack stack) {
         float distance = (float) Math.sqrt(pos.distSqr(breakingPos));
         Vec3 dropPos = VecHelper.getCenterOf(pos);
-        ItemEntity entity = new ItemEntity(level, dropPos.x, dropPos.y, dropPos.z, stack);
-        entity.setDeltaMovement(Vec3.atLowerCornerOf(breakingPos.subtract(worldPosition)).scale(distance / 20f));
-        level.addFreshEntity(entity);
+        BlockPos blockPos = BlockPos.containing(dropPos);
+        LivingBlock entity = LivingBlock.createAt(level, blockPos, stack);
+        if (entity != null) {
+            entity.setDeltaMovement(Vec3.atLowerCornerOf(breakingPos.subtract(worldPosition)).scale(distance / 20f));
+        }
     }
 
     @Override

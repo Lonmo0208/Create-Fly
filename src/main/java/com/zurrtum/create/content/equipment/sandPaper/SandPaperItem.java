@@ -14,7 +14,7 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.livingblock.LivingBlock;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
@@ -62,15 +62,15 @@ public class SandPaperItem extends Item {
         Vec3 hitVec = raytraceresult.getLocation();
 
         AABB bb = new AABB(hitVec, hitVec).inflate(1f);
-        ItemEntity pickUp = null;
-        for (ItemEntity itemEntity : worldIn.getEntitiesOfClass(ItemEntity.class, bb)) {
+        LivingBlock pickUp = null;
+        for (LivingBlock itemEntity : worldIn.getEntitiesOfClass(LivingBlock.class, bb)) {
             if (!itemEntity.isAlive()) {
                 continue;
             }
             if (itemEntity.position().distanceTo(playerIn.position()) > 3) {
                 continue;
             }
-            ItemStack stack = itemEntity.getItem();
+            ItemStack stack = itemEntity.getItemStack();
             if (!recipe.test(stack)) {
                 continue;
             }
@@ -82,7 +82,7 @@ public class SandPaperItem extends Item {
             return InteractionResult.FAIL;
         }
 
-        ItemStack item = pickUp.getItem().copy();
+        ItemStack item = pickUp.getItemStack().copy();
         ItemStack toPolish = item.split(1);
 
         playerIn.startUsingItem(handIn);
@@ -92,7 +92,7 @@ public class SandPaperItem extends Item {
             if (item.isEmpty()) {
                 pickUp.discard();
             } else {
-                pickUp.setItem(item);
+                pickUp.setItemStack(item);
             }
         }
 

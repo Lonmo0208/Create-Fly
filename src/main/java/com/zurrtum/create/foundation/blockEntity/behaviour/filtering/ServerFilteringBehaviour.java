@@ -20,7 +20,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.livingblock.LivingBlock;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -155,9 +155,9 @@ public class ServerFilteringBehaviour extends BlockEntityBehaviour<SmartBlockEnt
     @Override
     public void destroy() {
         if (filter.isFilterItem()) {
-            Vec3 pos = VecHelper.getCenterOf(getPos());
+            BlockPos pos = getPos();
             Level world = getLevel();
-            world.addFreshEntity(new ItemEntity(world, pos.x, pos.y, pos.z, getFilter().copy()));
+            LivingBlock.createAt(world, pos, getFilter().copy());
         }
         super.destroy();
     }

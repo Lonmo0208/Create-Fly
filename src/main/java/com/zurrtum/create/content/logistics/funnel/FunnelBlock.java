@@ -19,7 +19,7 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.InsideBlockEffectApplier;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.livingblock.LivingBlock;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -148,7 +148,7 @@ public abstract class FunnelBlock extends AbstractDirectionalFunnelBlock {
         if (worldIn.isClientSide()) {
             return;
         }
-        ItemStack stack = ItemHelper.fromItemEntity(entityIn);
+        ItemStack stack = ItemHelper.fromLivingBlock(entityIn);
         if (stack.isEmpty()) {
             return;
         }
@@ -158,7 +158,7 @@ public abstract class FunnelBlock extends AbstractDirectionalFunnelBlock {
 
         Direction direction = getFunnelFacing(state);
         Vec3 openPos = VecHelper.getCenterOf(pos)
-            .add(Vec3.atLowerCornerOf(direction.getUnitVec3i()).scale(entityIn instanceof ItemEntity ? -.25f : -.125f));
+            .add(Vec3.atLowerCornerOf(direction.getUnitVec3i()).scale(entityIn instanceof LivingBlock ? -.25f : -.125f));
         Vec3 diff = entityIn.position().subtract(openPos);
         double projectedDiff = direction.getAxis().choose(diff.x, diff.y, diff.z);
         if (projectedDiff < 0 == (direction.getAxisDirection() == AxisDirection.POSITIVE)) {
@@ -174,8 +174,8 @@ public abstract class FunnelBlock extends AbstractDirectionalFunnelBlock {
         if (remainder.isEmpty()) {
             entityIn.discard();
         }
-        if (remainder.getCount() < stack.getCount() && entityIn instanceof ItemEntity) {
-            ((ItemEntity) entityIn).setItem(remainder);
+        if (remainder.getCount() < stack.getCount() && entityIn instanceof LivingBlock) {
+            ((LivingBlock) entityIn).setItemStack(remainder);
         }
     }
 
@@ -192,7 +192,7 @@ public abstract class FunnelBlock extends AbstractDirectionalFunnelBlock {
 
     @Override
     public VoxelShape getCollisionShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext context) {
-        if (context instanceof EntityCollisionContext && ((EntityCollisionContext) context).getEntity() instanceof ItemEntity && getFacing(
+        if (context instanceof EntityCollisionContext && ((EntityCollisionContext) context).getEntity() instanceof LivingBlock && getFacing(
             state).getAxis().isHorizontal()) {
             return AllShapes.FUNNEL_COLLISION.get(getFacing(state));
         }

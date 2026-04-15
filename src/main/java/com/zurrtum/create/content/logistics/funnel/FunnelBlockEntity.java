@@ -26,7 +26,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Clearable;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.livingblock.LivingBlock;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.block.state.BlockState;
@@ -155,7 +155,7 @@ public class FunnelBlockEntity extends SmartBlockEntity implements Clearable {
         // Only scan for blocking entities if there's something to extract
         AABB area = getEntityOverflowScanningArea();
         for (Entity entity : level.getEntities(null, area)) {
-            if (entity instanceof ItemEntity || entity instanceof PackageEntity) {
+            if (entity instanceof LivingBlock || entity instanceof PackageEntity) {
                 lastObserved = new WeakReference<>(entity);
                 return;
             }
@@ -184,11 +184,12 @@ public class FunnelBlockEntity extends SmartBlockEntity implements Clearable {
             motion = new Vec3(0, 4 / 16f, 0);
         }
 
-        ItemEntity item = new ItemEntity(level, outputPos.x, outputPos.y, outputPos.z, stack.copy());
-        item.setDefaultPickUpDelay();
-        item.setDeltaMovement(motion);
-        level.addFreshEntity(item);
-        lastObserved = new WeakReference<>(item);
+        BlockPos pos = BlockPos.containing(outputPos);
+        LivingBlock item = LivingBlock.createAt(level, pos, stack.copy());
+        if (item != null) {
+            item.setDeltaMovement(motion);
+            lastObserved = new WeakReference<>(item);
+        }
 
         startCooldown();
     }

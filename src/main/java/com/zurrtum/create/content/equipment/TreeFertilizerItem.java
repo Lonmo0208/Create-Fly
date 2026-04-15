@@ -58,7 +58,7 @@ public class TreeFertilizerItem extends Item {
                 BlockState newState = treesDreamWorld.blocksAdded.get(pos);
 
                 // Don't replace Bedrock
-                if (world.getBlockState(actualPos).getDestroySpeed(world, actualPos) == -1) {
+                if (world.getBlockState(actualPos).getDestroySpeed() == -1) {
                     continue;
                 }
                 // Don't replace solid blocks with leaves

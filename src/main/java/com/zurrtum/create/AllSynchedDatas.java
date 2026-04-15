@@ -18,7 +18,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.animal.equine.Horse;
 import net.minecraft.world.entity.animal.parrot.Parrot;
-import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.livingblock.LivingBlock;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.vehicle.minecart.AbstractMinecart;
 import net.minecraft.world.item.ItemStack;
@@ -45,10 +45,10 @@ public class AllSynchedDatas {
         ByteBufCodecs::optional));
     public static final EntityDataSerializer<CompoundTag> NBT_COMPOUND_HANDLER = register(ByteBufCodecs.TRUSTED_COMPOUND_TAG);
     public static final Entry<Integer> HAUNTING = register(Horse.class, EntityDataSerializers.INT, 0);
-    public static final Entry<String> ITEM_TYPE = register(ItemEntity.class, EntityDataSerializers.STRING, "");
-    public static final Entry<Integer> ITEM_TIME = register(ItemEntity.class, EntityDataSerializers.INT, 0);
+    public static final Entry<String> ITEM_TYPE = register(LivingBlock.class, EntityDataSerializers.STRING, "");
+    public static final Entry<Integer> ITEM_TIME = register(LivingBlock.class, EntityDataSerializers.INT, 0);
     public static final Entry<Optional<BlockPos>> BYPASS_CRUSHING_WHEEL = register(
-        ItemEntity.class,
+        LivingBlock.class,
         EntityDataSerializers.OPTIONAL_BLOCK_POS,
         Optional.empty()
     );

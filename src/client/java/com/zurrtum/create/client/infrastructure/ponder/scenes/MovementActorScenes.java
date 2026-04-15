@@ -16,7 +16,7 @@ import com.zurrtum.create.content.contraptions.chassis.LinearChassisBlock;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.livingblock.LivingBlock;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
@@ -101,10 +101,10 @@ public class MovementActorScenes {
         Vec3 entitySpawn = util.vector().topOf(hopper.above(3));
 
         ElementLink<EntityElement> entity1 = scene.world()
-            .createItemEntity(entitySpawn, util.vector().of(0, 0.2, 0), itemStack);
+            .createLivingBlock(entitySpawn, util.vector().of(0, 0.2, 0), itemStack);
         scene.idle(10);
         ElementLink<EntityElement> entity2 = scene.world()
-            .createItemEntity(entitySpawn, util.vector().of(0, 0.2, 0), itemStack);
+            .createLivingBlock(entitySpawn, util.vector().of(0, 0.2, 0), itemStack);
         scene.idle(10);
         scene.world().modifyEntity(entity1, Entity::discard);
         scene.idle(10);
@@ -126,9 +126,9 @@ public class MovementActorScenes {
         scene.world().createItemOnBelt(beltPos, Direction.EAST, itemStack);
 
         scene.idle(20);
-        scene.world().modifyEntities(ItemEntity.class, Entity::discard);
+        scene.world().modifyEntities(LivingBlock.class, Entity::discard);
         scene.idle(15);
-        scene.world().modifyEntities(ItemEntity.class, Entity::discard);
+        scene.world().modifyEntities(LivingBlock.class, Entity::discard);
 
         scene.overlay().showText(120).placeNearTarget().pointAt(util.vector().topOf(psi2))
             .text("After no items have been exchanged for a while, the contraption will continue on its way");
@@ -235,26 +235,26 @@ public class MovementActorScenes {
         scene.idle(5);
         BlockPos current = util.grid().at(2, 1, 3);
         scene.world().setBlock(current, harvested, true);
-        scene.world().createItemEntity(util.vector().centerOf(current), util.vector().of(0, 0.3, -.2), wheatItem);
+        scene.world().createLivingBlock(util.vector().centerOf(current), util.vector().of(0, 0.3, -.2), wheatItem);
         scene.idle(5);
         current = util.grid().at(1, 1, 2);
         scene.world().setBlock(current, harvested, true);
-        scene.world().createItemEntity(util.vector().centerOf(current), util.vector().of(0, 0.3, -.2), wheatItem);
+        scene.world().createLivingBlock(util.vector().centerOf(current), util.vector().of(0, 0.3, -.2), wheatItem);
         scene.idle(5);
         current = util.grid().at(3, 1, 2);
         scene.world().setBlock(current, harvested, true);
-        scene.world().createItemEntity(util.vector().centerOf(current), util.vector().of(.1, 0.3, -.1), wheatItem);
+        scene.world().createLivingBlock(util.vector().centerOf(current), util.vector().of(.1, 0.3, -.1), wheatItem);
         current = util.grid().at(2, 1, 1);
         scene.world().setBlock(current, harvested, true);
-        scene.world().createItemEntity(util.vector().centerOf(current), util.vector().of(.1, 0.3, -.1), wheatItem);
+        scene.world().createLivingBlock(util.vector().centerOf(current), util.vector().of(.1, 0.3, -.1), wheatItem);
         scene.idle(5);
         current = util.grid().at(3, 1, 1);
         scene.world().setBlock(current, harvested, true);
-        scene.world().createItemEntity(util.vector().centerOf(current), util.vector().of(.1, 0.3, -.1), wheatItem);
+        scene.world().createLivingBlock(util.vector().centerOf(current), util.vector().of(.1, 0.3, -.1), wheatItem);
         scene.idle(5);
         current = util.grid().at(4, 1, 2);
         scene.world().setBlock(current, harvested, true);
-        scene.world().createItemEntity(util.vector().centerOf(current), util.vector().of(.2, 0.3, 0), wheatItem);
+        scene.world().createLivingBlock(util.vector().centerOf(current), util.vector().of(.2, 0.3, 0), wheatItem);
 
         scene.overlay().showText(80).pointAt(util.vector().topOf(1, 0, 2))
             .text("They will harvest and reset any mature crops on their way").placeNearTarget();
@@ -262,7 +262,7 @@ public class MovementActorScenes {
         scene.idle(101);
         scene.world().hideSection(crops, Direction.DOWN);
         scene.idle(15);
-        scene.world().modifyEntities(ItemEntity.class, Entity::discard);
+        scene.world().modifyEntities(LivingBlock.class, Entity::discard);
         scene.world().setBlocks(crops, Blocks.WHEAT.defaultBlockState().setValue(CropBlock.AGE, 7), false);
         scene.world().showSection(crops, Direction.UP);
 
@@ -358,16 +358,16 @@ public class MovementActorScenes {
 
         Vec3 m = util.vector().of(-0.1, .2, 0);
         scene.world().destroyBlock(util.grid().at(2, 1, 3));
-        scene.world().createItemEntity(util.vector().centerOf(2, 1, 3), m, new ItemStack(Items.LEVER));
+        scene.world().createLivingBlock(util.vector().centerOf(2, 1, 3), m, new ItemStack(Items.LEVER));
         scene.world().destroyBlock(util.grid().at(2, 1, 2));
-        scene.world().createItemEntity(util.vector().centerOf(2, 1, 2), m, new ItemStack(Items.TORCH));
+        scene.world().createLivingBlock(util.vector().centerOf(2, 1, 2), m, new ItemStack(Items.TORCH));
 
         scene.idle(30);
 
         scene.world().destroyBlock(util.grid().at(1, 1, 3));
-        scene.world().createItemEntity(util.vector().centerOf(1, 1, 3), m, new ItemStack(Items.RAIL));
+        scene.world().createLivingBlock(util.vector().centerOf(1, 1, 3), m, new ItemStack(Items.RAIL));
         scene.world().destroyBlock(util.grid().at(1, 1, 2));
-        scene.world().createItemEntity(util.vector().centerOf(1, 1, 2), m, new ItemStack(Items.REDSTONE));
+        scene.world().createLivingBlock(util.vector().centerOf(1, 1, 2), m, new ItemStack(Items.REDSTONE));
 
         scene.overlay().showText(60).placeNearTarget()
             .pointAt(util.vector().blockSurface(util.grid().at(1, 1, 3), Direction.EAST))
@@ -380,7 +380,7 @@ public class MovementActorScenes {
         scene.world().hideSection(garbage, Direction.UP);
         scene.idle(40);
         scene.world().setBlocks(garbage, Blocks.SNOW.defaultBlockState(), false);
-        scene.world().modifyEntities(ItemEntity.class, Entity::discard);
+        scene.world().modifyEntities(LivingBlock.class, Entity::discard);
         ElementLink<WorldSectionElement> chest = scene.world()
             .showIndependentSection(util.select().position(4, 2, 2), Direction.DOWN);
 
@@ -536,7 +536,7 @@ public class MovementActorScenes {
         ItemStack cobbleItem = new ItemStack(Items.COBBLESTONE);
         ItemStack wheatItem = new ItemStack(Items.WHEAT);
         ElementLink<EntityElement> item1 = scene.world()
-            .createItemEntity(util.vector().centerOf(cobblePos), m, cobbleItem);
+            .createLivingBlock(util.vector().centerOf(cobblePos), m, cobbleItem);
 
         scene.idle(5);
 
@@ -546,7 +546,7 @@ public class MovementActorScenes {
 
         scene.world().setBlock(wheatPos, harvested, true);
         ElementLink<EntityElement> item2 = scene.world()
-            .createItemEntity(util.vector().centerOf(wheatPos), m, wheatItem);
+            .createLivingBlock(util.vector().centerOf(wheatPos), m, wheatItem);
         scene.idle(35);
 
         scene.world().modifyBlockEntity(harvesterPos, HarvesterBlockEntity.class, hte -> hte.setAnimatedSpeed(0));
@@ -657,7 +657,7 @@ public class MovementActorScenes {
         scene.idle(25);
         scene.world().setBlock(wheatPos, harvested, true);
         ElementLink<EntityElement> item3 = scene.world()
-            .createItemEntity(util.vector().centerOf(wheatPos), m, wheatItem);
+            .createLivingBlock(util.vector().centerOf(wheatPos), m, wheatItem);
         scene.idle(35);
         scene.world().modifyBlockEntity(harvesterPos, HarvesterBlockEntity.class, hte -> hte.setAnimatedSpeed(0));
         scene.idle(5);
@@ -702,7 +702,7 @@ public class MovementActorScenes {
         }
 
         ElementLink<EntityElement> item4 = scene.world()
-            .createItemEntity(util.vector().centerOf(cobblePos), m, cobbleItem);
+            .createLivingBlock(util.vector().centerOf(cobblePos), m, cobbleItem);
 
         scene.idle(5);
         scene.world().rotateBearing(bearingPos, -60, 40);

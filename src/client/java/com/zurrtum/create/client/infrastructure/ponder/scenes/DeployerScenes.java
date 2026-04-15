@@ -127,7 +127,7 @@ public class DeployerScenes {
         Vec3 entitySpawn = util.vector().topOf(deployerPos.above(3));
 
         ElementLink<EntityElement> entity1 = scene.world()
-            .createItemEntity(entitySpawn, util.vector().of(0, 0.2, 0), tulip);
+            .createLivingBlock(entitySpawn, util.vector().of(0, 0.2, 0), tulip);
         scene.idle(17);
         scene.world().modifyEntity(entity1, Entity::discard);
         scene.world().modifyBlockEntityNBT(
@@ -189,7 +189,7 @@ public class DeployerScenes {
         });
         scene.idle(20);
         scene.world().showSection(util.select().position(deployerPos.above()), Direction.WEST);
-        entity1 = scene.world().createItemEntity(entitySpawn, util.vector().of(0, 0.2, 0), shears);
+        entity1 = scene.world().createLivingBlock(entitySpawn, util.vector().of(0, 0.2, 0), shears);
         scene.idle(17);
         scene.world().modifyEntity(entity1, Entity::discard);
         scene.world().modifyBlockEntityNBT(
@@ -221,7 +221,7 @@ public class DeployerScenes {
         scene.overlay().showText(80).placeNearTarget().pointAt(util.vector().of(3.5, 1.25, 1.25))
             .text("...and only non-matching items will be extracted");
         scene.world().flapFunnel(deployerPos.north(), true);
-        scene.world().createItemEntity(
+        scene.world().createLivingBlock(
             util.vector().centerOf(deployerPos.north()).subtract(0, .45, 0),
             util.vector().of(0, 0, -0.1),
             new ItemStack(Items.PINK_WOOL)
@@ -303,7 +303,7 @@ public class DeployerScenes {
             scene.world().incrementBlockBreakingProgress(breakingPos);
             scene.world().moveDeployer(deployerPos, -1, 25);
             if (i == 3) {
-                scene.world().createItemEntity(
+                scene.world().createLivingBlock(
                     util.vector().centerOf(breakingPos),
                     util.vector().of(0, 0, 0),
                     new ItemStack(Blocks.DIRT)

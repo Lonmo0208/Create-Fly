@@ -152,7 +152,7 @@ public class CartAssemblerScenes {
         scene.world().moveSection(contraption, util.vector().of(0, -100, 4), 0);
         ItemStack asStack = AllItems.MINECART_CONTRAPTION.getDefaultInstance();
         ElementLink<EntityElement> itemEntity = scene.world()
-            .createItemEntity(cartCenter, util.vector().of(0, .1, 0), asStack);
+            .createLivingBlock(cartCenter, util.vector().of(0, .1, 0), asStack);
         scene.idle(40);
         scene.overlay().showText(80).attachKeyFrame()
             .text("Using a Wrench on the Minecart will let you carry the Contraption elsewhere").pointAt(cartCenter)

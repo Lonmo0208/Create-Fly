@@ -20,7 +20,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import org.jspecify.annotations.Nullable;
 
-public class ScheduleItemEntityInteraction {
+public class ScheduleLivingBlockInteraction {
     @Nullable
     public static InteractionResult interactWithConductor(Entity entity, Player player, InteractionHand hand) {
         Entity rootVehicle = entity.getRootVehicle();

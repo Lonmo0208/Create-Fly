@@ -7,8 +7,9 @@ import com.zurrtum.create.catnip.data.WorldAttached;
 import com.zurrtum.create.content.contraptions.minecart.CouplingHandler;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectLists;
+import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.livingblock.LivingBlock;
 import net.minecraft.world.entity.vehicle.minecart.AbstractMinecart;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
@@ -153,15 +154,8 @@ public class CapabilityMinecartController {
             }
 
             Vec3 itemPos = cart.position().add(removedPos).scale(.5f);
-            ItemEntity itemEntity = new ItemEntity(
-                world,
-                itemPos.x,
-                itemPos.y,
-                itemPos.z,
-                AllItems.MINECART_COUPLING.getDefaultInstance()
-            );
-            itemEntity.setDefaultPickUpDelay();
-            world.addFreshEntity(itemEntity);
+            BlockPos pos = BlockPos.containing(itemPos.x, itemPos.y, itemPos.z);
+            LivingBlock.createAt(world, pos, AllItems.MINECART_COUPLING.getDefaultInstance());
         }
     }
 

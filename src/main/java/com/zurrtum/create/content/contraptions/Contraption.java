@@ -1206,7 +1206,7 @@ public abstract class Contraption {
                 }
 
                 BlockState blockState = world.getBlockState(targetPos);
-                if (blockState.getDestroySpeed(world, targetPos) == -1 || (state.getCollisionShape(world, targetPos)
+                if (blockState.getDestroySpeed() == -1 || (state.getCollisionShape(world, targetPos)
                     .isEmpty() && !blockState.getCollisionShape(world, targetPos).isEmpty())) {
                     if (targetPos.getY() == world.getMinY()) {
                         targetPos = targetPos.above();

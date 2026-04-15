@@ -24,7 +24,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
 import net.minecraft.core.Direction.AxisDirection;
 import net.minecraft.world.Container;
-import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.livingblock.LivingBlock;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -432,11 +432,12 @@ public class BrassTunnelBlockEntity extends BeltTunnelBlockEntity {
                     Vec3 outPos = BeltHelper.getVectorForOffset(controllerBE, below.index + additionalOffset);
                     Vec3 outMotion = Vec3.atLowerCornerOf(side.getUnitVec3i()).scale(movementSpeed).add(0, 1 / 8f, 0);
                     outPos.add(outMotion.normalize());
-                    ItemEntity entity = new ItemEntity(level, outPos.x, outPos.y + 6 / 16f, outPos.z, stack);
-                    entity.setDeltaMovement(outMotion);
-                    entity.setDefaultPickUpDelay();
-                    entity.hurtMarked = true;
-                    level.addFreshEntity(entity);
+                    BlockPos pos = BlockPos.containing(outPos.x, outPos.y + 6 / 16f, outPos.z);
+                    LivingBlock entity = LivingBlock.createAt(level, pos, stack);
+                    if (entity != null) {
+                        entity.setDeltaMovement(outMotion);
+                        entity.hurtMarked = true;
+                    }
                 }
 
                 return ItemStack.EMPTY;

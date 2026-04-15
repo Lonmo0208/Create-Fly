@@ -42,7 +42,7 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.InsideBlockEffectApplier;
-import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.livingblock.LivingBlock;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
@@ -199,7 +199,7 @@ public class BeltBlock extends HorizontalKineticBlock implements IBE<BeltBlockEn
         if (belt == null) {
             return;
         }
-        ItemStack asItem = ItemHelper.fromItemEntity(entityIn);
+        ItemStack asItem = ItemHelper.fromLivingBlock(entityIn);
         if (!asItem.isEmpty()) {
             if (worldIn.isClientSide()) {
                 return;
@@ -223,9 +223,9 @@ public class BeltBlock extends HorizontalKineticBlock implements IBE<BeltBlockEn
                     int insert = inventory.insert(asItem);
                     if (asItem.getCount() == insert) {
                         entityIn.discard();
-                    } else if (entityIn instanceof ItemEntity itemEntity && insert != 0) {
+                    } else if (entityIn instanceof LivingBlock itemEntity && insert != 0) {
                         asItem.shrink(insert);
-                        itemEntity.setItem(asItem);
+                        itemEntity.setItemStack(asItem);
                     }
                 }
             );

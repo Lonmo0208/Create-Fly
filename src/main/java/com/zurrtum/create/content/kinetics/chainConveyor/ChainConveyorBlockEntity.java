@@ -22,7 +22,7 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.util.Mth;
 import net.minecraft.world.Clearable;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.livingblock.LivingBlock;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -499,7 +499,7 @@ public class ChainConveyorBlockEntity extends KineticBlockEntity implements Tran
         if (!forPointsAlongChains(
             target,
             chainCount,
-            vec -> level.addFreshEntity(new ItemEntity(level, vec.x, vec.y, vec.z, new ItemStack(Items.IRON_CHAIN)))
+            vec -> LivingBlock.createAt(level, BlockPos.containing(vec), new ItemStack(Items.IRON_CHAIN))
         )) {
             while (chainCount > 0) {
                 Block.popResource(

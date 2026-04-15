@@ -5,7 +5,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.dispenser.DefaultDispenseItemBehavior;
 import net.minecraft.world.Container;
-import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.livingblock.LivingBlock;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
@@ -83,13 +83,15 @@ public class DefaultMountedDispenseBehavior implements MountedDispenseBehavior {
             y = y - 0.15625;
         }
 
-        ItemEntity entity = new ItemEntity(level, x, y, z, stack);
-        double d3 = level.getRandom().nextDouble() * 0.1 + 0.2;
-        entity.setDeltaMovement(
-            level.getRandom().nextGaussian() * 0.0075 * speed + facing.x() * d3 + context.motion.x,
-            level.getRandom().nextGaussian() * 0.0075 * speed + facing.y() * d3 + context.motion.y,
-            level.getRandom().nextGaussian() * 0.0075 * speed + facing.z() * d3 + context.motion.z
-        );
-        level.addFreshEntity(entity);
+        BlockPos entityPos = BlockPos.containing(x, y, z);
+        LivingBlock entity = LivingBlock.createAt(level, entityPos, stack);
+        if (entity != null) {
+            double d3 = level.getRandom().nextDouble() * 0.1 + 0.2;
+            entity.setDeltaMovement(
+                level.getRandom().nextGaussian() * 0.0075 * speed + facing.x() * d3 + context.motion.x,
+                level.getRandom().nextGaussian() * 0.0075 * speed + facing.y() * d3 + context.motion.y,
+                level.getRandom().nextGaussian() * 0.0075 * speed + facing.z() * d3 + context.motion.z
+            );
+        }
     }
 }

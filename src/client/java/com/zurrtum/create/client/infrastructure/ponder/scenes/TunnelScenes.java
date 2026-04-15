@@ -19,7 +19,7 @@ import com.zurrtum.create.foundation.blockEntity.behaviour.scrollValue.ServerScr
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.livingblock.LivingBlock;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
@@ -300,18 +300,18 @@ public class TunnelScenes {
         BlockPos beltPos = util.grid().at(5, 3, 3);
         Vec3 m = util.vector().of(0, 0.1, 0);
         Vec3 spawn = util.vector().centerOf(util.grid().at(5, 3, 2));
-        scene.world().createItemEntity(spawn, m, item1);
+        scene.world().createLivingBlock(spawn, m, item1);
         scene.idle(12);
         scene.world().createItemOnBelt(beltPos, Direction.UP, item1);
-        scene.world().modifyEntities(ItemEntity.class, Entity::discard);
-        scene.world().createItemEntity(spawn, m, item2);
+        scene.world().modifyEntities(LivingBlock.class, Entity::discard);
+        scene.world().createLivingBlock(spawn, m, item2);
         scene.idle(12);
         scene.world().createItemOnBelt(beltPos, Direction.UP, item2);
-        scene.world().modifyEntities(ItemEntity.class, Entity::discard);
-        scene.world().createItemEntity(spawn, m, item3);
+        scene.world().modifyEntities(LivingBlock.class, Entity::discard);
+        scene.world().createLivingBlock(spawn, m, item3);
         scene.idle(12);
         scene.world().createItemOnBelt(beltPos, Direction.UP, item3);
-        scene.world().modifyEntities(ItemEntity.class, Entity::discard);
+        scene.world().modifyEntities(LivingBlock.class, Entity::discard);
         scene.idle(50);
 
         scene.world().showSectionAndMerge(util.select().position(3, 5, 2), Direction.DOWN, newBelt);
@@ -322,18 +322,18 @@ public class TunnelScenes {
 
         beltPos = util.grid().at(3, 3, 3);
         spawn = util.vector().centerOf(util.grid().at(3, 5, 1));
-        scene.world().createItemEntity(spawn, m, item1);
+        scene.world().createLivingBlock(spawn, m, item1);
         scene.idle(12);
         scene.world().createItemOnBelt(beltPos, Direction.EAST, item1);
-        scene.world().modifyEntities(ItemEntity.class, Entity::discard);
-        scene.world().createItemEntity(spawn, m, item2);
+        scene.world().modifyEntities(LivingBlock.class, Entity::discard);
+        scene.world().createLivingBlock(spawn, m, item2);
         scene.idle(12);
         scene.world().createItemOnBelt(beltPos, Direction.EAST, item2);
-        scene.world().modifyEntities(ItemEntity.class, Entity::discard);
-        scene.world().createItemEntity(spawn, m, item3);
+        scene.world().modifyEntities(LivingBlock.class, Entity::discard);
+        scene.world().createLivingBlock(spawn, m, item3);
         scene.idle(12);
         scene.world().createItemOnBelt(beltPos, Direction.EAST, item3);
-        scene.world().modifyEntities(ItemEntity.class, Entity::discard);
+        scene.world().modifyEntities(LivingBlock.class, Entity::discard);
         scene.idle(30);
 
     }

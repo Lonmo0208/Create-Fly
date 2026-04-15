@@ -24,7 +24,7 @@ import com.zurrtum.create.content.logistics.stockTicker.StockTickerInteractionHa
 import com.zurrtum.create.content.redstone.analogLever.AnalogLeverBlock;
 import com.zurrtum.create.content.redstone.displayLink.ClickToLinkBlockItem;
 import com.zurrtum.create.content.redstone.link.controller.LinkedControllerItem;
-import com.zurrtum.create.content.trains.schedule.ScheduleItemEntityInteraction;
+import com.zurrtum.create.content.trains.schedule.ScheduleLivingBlockInteraction;
 import com.zurrtum.create.foundation.block.BreakControlBlock;
 import com.zurrtum.create.foundation.block.SoundControlBlock;
 import com.zurrtum.create.foundation.blockEntity.behaviour.edgeInteraction.EdgeInteractionHandler;
@@ -66,51 +66,77 @@ public class MultiPlayerGameModeMixin {
 
     @Inject(method = "useItemOn(Lnet/minecraft/client/player/LocalPlayer;Lnet/minecraft/world/InteractionHand;Lnet/minecraft/world/phys/BlockHitResult;)Lnet/minecraft/world/InteractionResult;", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/multiplayer/MultiPlayerGameMode;startPrediction(Lnet/minecraft/client/multiplayer/ClientLevel;Lnet/minecraft/client/multiplayer/prediction/PredictiveAction;)V"), cancellable = true)
     private void interactBlock(
-        LocalPlayer player,
-        InteractionHand hand,
-        BlockHitResult hitResult,
-        CallbackInfoReturnable<InteractionResult> cir
+            LocalPlayer player,
+            InteractionHand hand,
+            BlockHitResult hitResult,
+            CallbackInfoReturnable<InteractionResult> cir
     ) {
         if (localPlayerMode == GameType.SPECTATOR) {
             return;
         }
         Stream.<ClientRightClickPreHandle>of(
-                SuperGlueItem::glueItemAlwaysPlacesWhenUsed,
-                ArmInteractionPointHandler::rightClickingBlocksSelectsThem,
-                ChainConveyorConnectionHandler::onItemUsedOnBlock,
-                ValueSettingsInputHandler::onBlockActivated,
-                LinkHandler::onBlockActivated,
-                EjectorTargetHandler::rightClickingBlocksSelectsThem
-            ).map(handler -> handler.onRightClickBlock(minecraft.level, player, hand, hitResult)).filter(Objects::nonNull)
-            .findFirst()
-            .ifPresentOrElse(cir::setReturnValue, () -> TrackPlacementClient.sendExtenderPacket(player, hand));
+                        SuperGlueItem::glueItemAlwaysPlacesWhenUsed,
+                        ArmInteractionPointHandler::rightClickingBlocksSelectsThem,
+                        ChainConveyorConnectionHandler::onItemUsedOnBlock,
+                        ValueSettingsInputHandler::onBlockActivated,
+                        LinkHandler::onBlockActivated,
+                        EjectorTargetHandler::rightClickingBlocksSelectsThem
+                ).map(handler -> handler.onRightClickBlock(minecraft.level, player, hand, hitResult)).filter(Objects::nonNull)
+                .findFirst()
+                .ifPresentOrElse(cir::setReturnValue, () -> TrackPlacementClient.sendExtenderPacket(player, hand));
     }
 
     @Inject(method = "performUseItemOn(Lnet/minecraft/client/player/LocalPlayer;Lnet/minecraft/world/InteractionHand;Lnet/minecraft/world/phys/BlockHitResult;)Lnet/minecraft/world/InteractionResult;", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/player/LocalPlayer;getMainHandItem()Lnet/minecraft/world/item/ItemStack;"), cancellable = true)
     private void interactBlockInternal(
-        LocalPlayer player,
-        InteractionHand hand,
-        BlockHitResult hit,
-        CallbackInfoReturnable<InteractionResult> cir,
-        @Local BlockPos pos,
-        @Local ItemStack stack
+            LocalPlayer player,
+            InteractionHand hand,
+            BlockHitResult hit,
+            CallbackInfoReturnable<InteractionResult> cir,
+            @Local BlockPos pos,
+            @Local ItemStack stack
     ) {
         Stream.<ClientRightClickHandle>of(
-                WrenchEventHandler::useOwnWrenchLogicForCreateBlocks,
-                ClipboardValueSettingsHandler::rightClickToCopy,
-                ManualApplicationHelper::manualApplicationRecipesApplyInWorld,
-                EdgeInteractionHandler::onBlockActivated,
-                LinkedControllerItem::onItemUseFirst,
-                CogwheelBlockItem::onItemUseFirst
-            ).map(handler -> handler.onRightClickBlock(minecraft.level, player, stack, hand, hit, pos))
-            .filter(Objects::nonNull).findFirst().ifPresent(cir::setReturnValue);
+                        WrenchEventHandler::useOwnWrenchLogicForCreateBlocks,
+                        ClipboardValueSettingsHandler::rightClickToCopy,
+                        ManualApplicationHelper::manualApplicationRecipesApplyInWorld,
+                        EdgeInteractionHandler::onBlockActivated,
+                        LinkedControllerItem::onItemUseFirst,
+                        CogwheelBlockItem::onItemUseFirst
+                ).map(handler -> handler.onRightClickBlock(minecraft.level, player, stack, hand, hit, pos))
+                .filter(Objects::nonNull).findFirst().ifPresent(cir::setReturnValue);
+    }
+
+    @Inject(method = "startDestroyBlock(Lnet/minecraft/core/BlockPos;Lnet/minecraft/core/Direction;)Z", at = @At("HEAD"), cancellable = true)
+    private void onStartDestroyBlock(BlockPos pos, Direction direction, CallbackInfoReturnable<Boolean> cir) {
+        if (ClipboardValueSettingsHandler.leftClickToPaste(
+                minecraft.level,
+                minecraft.player,
+                minecraft.player.getMainHandItem(),
+                direction,
+                pos
+        )) {
+            cir.setReturnValue(false);
+        }
+    }
+
+    @Inject(method = "continueDestroyBlock(Lnet/minecraft/core/BlockPos;Lnet/minecraft/core/Direction;)Z", at = @At("HEAD"), cancellable = true)
+    private void onContinueDestroyBlock(BlockPos pos, Direction direction, CallbackInfoReturnable<Boolean> cir) {
+        if (ClipboardValueSettingsHandler.leftClickToPaste(
+                minecraft.level,
+                minecraft.player,
+                minecraft.player.getMainHandItem(),
+                direction,
+                pos
+        )) {
+            cir.setReturnValue(false);
+        }
     }
 
     @Inject(method = "startDestroyBlock(Lnet/minecraft/core/BlockPos;Lnet/minecraft/core/Direction;)Z", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/tutorial/Tutorial;onDestroyBlock(Lnet/minecraft/client/multiplayer/ClientLevel;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;F)V"), cancellable = true)
     private void attackBlock(BlockPos pos, Direction direction, CallbackInfoReturnable<Boolean> cir) {
         if (EjectorTargetHandler.leftClickingBlocksDeselectsThem(
-            minecraft.player,
-            pos
+                minecraft.player,
+                pos
         ) || ArmInteractionPointHandler.leftClickingBlocksDeselectsThem(pos)) {
             cir.setReturnValue(true);
             return;
@@ -121,120 +147,56 @@ public class MultiPlayerGameModeMixin {
     @Inject(method = "continueDestroyBlock(Lnet/minecraft/core/BlockPos;Lnet/minecraft/core/Direction;)Z", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/tutorial/Tutorial;onDestroyBlock(Lnet/minecraft/client/multiplayer/ClientLevel;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;F)V"), cancellable = true)
     private void updateBlockBreakingProgress(BlockPos pos, Direction direction, CallbackInfoReturnable<Boolean> cir) {
         if (EjectorTargetHandler.leftClickingBlocksDeselectsThem(
-            minecraft.player,
-            pos
+                minecraft.player,
+                pos
         ) || ArmInteractionPointHandler.leftClickingBlocksDeselectsThem(pos)) {
             cir.setReturnValue(true);
         }
     }
 
-    @WrapOperation(method = "lambda$startDestroyBlock$0(Lnet/minecraft/core/BlockPos;Lnet/minecraft/core/Direction;I)Lnet/minecraft/network/protocol/Packet;", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/multiplayer/MultiPlayerGameMode;destroyBlock(Lnet/minecraft/core/BlockPos;)Z"))
-    private boolean onLeftClick1(
-        MultiPlayerGameMode instance,
-        BlockPos pos,
-        Operation<Boolean> original,
-        @Local(argsOnly = true) Direction direction
+    @WrapOperation(method = "continueDestroyBlock(Lnet/minecraft/core/BlockPos;Lnet/minecraft/core/Direction;)Z", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/block/state/BlockState;getSoundType()Lnet/minecraft/world/level/block/SoundType;"))
+    private SoundType getHitSound(
+            BlockState state,
+            Operation<SoundType> original,
+            @Local(argsOnly = true) BlockPos pos
     ) {
-        if (ClipboardValueSettingsHandler.leftClickToPaste(
-            minecraft.level,
-            minecraft.player,
-            minecraft.player.getMainHandItem(),
-            direction,
-            pos
-        )) {
-            return false;
+        if (state.getBlock() instanceof SoundControlBlock block) {
+            return block.getSoundGroup(minecraft.level, pos);
         }
-        return original.call(instance, pos);
-    }
-
-    @WrapOperation(method = "lambda$startDestroyBlock$1(Lnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/core/BlockPos;Lnet/minecraft/core/Direction;I)Lnet/minecraft/network/protocol/Packet;", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/multiplayer/MultiPlayerGameMode;destroyBlock(Lnet/minecraft/core/BlockPos;)Z"))
-    private boolean onLeftClick2(
-        MultiPlayerGameMode instance,
-        BlockPos pos,
-        Operation<Boolean> original,
-        @Local(argsOnly = true) Direction direction
-    ) {
-        if (ClipboardValueSettingsHandler.leftClickToPaste(
-            minecraft.level,
-            minecraft.player,
-            minecraft.player.getMainHandItem(),
-            direction,
-            pos
-        )) {
-            return false;
-        }
-        return original.call(instance, pos);
-    }
-
-    @WrapOperation(method = "lambda$continueDestroyBlock$0(Lnet/minecraft/core/BlockPos;Lnet/minecraft/core/Direction;I)Lnet/minecraft/network/protocol/Packet;", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/multiplayer/MultiPlayerGameMode;destroyBlock(Lnet/minecraft/core/BlockPos;)Z"))
-    private boolean onLeftClick3(
-        MultiPlayerGameMode instance,
-        BlockPos pos,
-        Operation<Boolean> original,
-        @Local(argsOnly = true) Direction direction
-    ) {
-        if (ClipboardValueSettingsHandler.leftClickToPaste(
-            minecraft.level,
-            minecraft.player,
-            minecraft.player.getMainHandItem(),
-            direction,
-            pos
-        )) {
-            return false;
-        }
-        return original.call(instance, pos);
-    }
-
-    @WrapOperation(method = "lambda$continueDestroyBlock$1(Lnet/minecraft/core/BlockPos;Lnet/minecraft/core/Direction;I)Lnet/minecraft/network/protocol/Packet;", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/multiplayer/MultiPlayerGameMode;destroyBlock(Lnet/minecraft/core/BlockPos;)Z"))
-    private boolean onLeftClick4(
-        MultiPlayerGameMode instance,
-        BlockPos pos,
-        Operation<Boolean> original,
-        @Local(argsOnly = true) Direction direction
-    ) {
-        if (ClipboardValueSettingsHandler.leftClickToPaste(
-            minecraft.level,
-            minecraft.player,
-            minecraft.player.getMainHandItem(),
-            direction,
-            pos
-        )) {
-            return false;
-        }
-        return original.call(instance, pos);
+        return original.call(state);
     }
 
     @WrapOperation(method = "performUseItemOn(Lnet/minecraft/client/player/LocalPlayer;Lnet/minecraft/world/InteractionHand;Lnet/minecraft/world/phys/BlockHitResult;)Lnet/minecraft/world/InteractionResult;", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/player/LocalPlayer;isSecondaryUseActive()Z"))
     private boolean shouldCancelInteraction(
-        LocalPlayer player,
-        Operation<Boolean> original,
-        @Local(argsOnly = true) InteractionHand hand,
-        @Local BlockPos pos,
-        @Local ItemStack stack
+            LocalPlayer player,
+            Operation<Boolean> original,
+            @Local(argsOnly = true) InteractionHand hand,
+            @Local BlockPos pos,
+            @Local ItemStack stack
     ) {
         if (original.call(player)) {
             BlockState state = minecraft.level.getBlockState(pos);
             return !(HandCrankBlock.onBlockActivated(hand, state, stack) || AnalogLeverBlock.onBlockActivated(
-                hand,
-                state,
-                stack
+                    hand,
+                    state,
+                    stack
             ) || ExtendoGripItem.shouldInteraction(player, hand, stack));
         }
         return FunnelItem.funnelItemAlwaysPlacesWhenUsed(stack) || ClickToLinkBlockItem.linkableItemAlwaysPlacesWhenUsed(minecraft.level,
-            pos,
-            stack
+                pos,
+                stack
         );
     }
 
     @WrapOperation(method = "interact(Lnet/minecraft/world/entity/player/Player;Lnet/minecraft/world/entity/Entity;Lnet/minecraft/world/phys/EntityHitResult;Lnet/minecraft/world/InteractionHand;)Lnet/minecraft/world/InteractionResult;", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/player/Player;interactOn(Lnet/minecraft/world/entity/Entity;Lnet/minecraft/world/InteractionHand;Lnet/minecraft/world/phys/Vec3;)Lnet/minecraft/world/InteractionResult;"))
     private InteractionResult interactEntityAtLocation(
-        Player player,
-        Entity entity,
-        InteractionHand hand,
-        Vec3 location,
-        Operation<InteractionResult> original
+            Player player,
+            Entity entity,
+            InteractionHand hand,
+            Vec3 location,
+            Operation<InteractionResult> original
     ) {
-        InteractionResult result = ScheduleItemEntityInteraction.interactWithConductor(entity, player, hand);
+        InteractionResult result = ScheduleLivingBlockInteraction.interactWithConductor(entity, player, hand);
         if (result != null) {
             return result;
         }
@@ -243,38 +205,5 @@ public class MultiPlayerGameModeMixin {
             return result;
         }
         return original.call(player, entity, hand, location);
-    }
-
-    @WrapOperation(method = "destroyBlock(Lnet/minecraft/core/BlockPos;)Z", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/Level;setBlock(Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;I)Z"))
-    private boolean breakBlock(
-        Level world,
-        BlockPos pos,
-        BlockState newState,
-        int flags,
-        Operation<Boolean> original,
-        @Local BlockState state,
-        @Local Block block
-    ) {
-        if (block instanceof BreakControlBlock controlBlock && !controlBlock.onDestroyedByPlayer(
-            state,
-            world,
-            pos,
-            minecraft.player
-        )) {
-            return false;
-        }
-        return original.call(world, pos, newState, flags);
-    }
-
-    @WrapOperation(method = "continueDestroyBlock(Lnet/minecraft/core/BlockPos;Lnet/minecraft/core/Direction;)Z", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/block/state/BlockState;getSoundType()Lnet/minecraft/world/level/block/SoundType;"))
-    private SoundType getHitSound(
-        BlockState state,
-        Operation<SoundType> original,
-        @Local(argsOnly = true) BlockPos pos
-    ) {
-        if (state.getBlock() instanceof SoundControlBlock block) {
-            return block.getSoundGroup(minecraft.level, pos);
-        }
-        return original.call(state);
     }
 }

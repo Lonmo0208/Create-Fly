@@ -20,7 +20,7 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.livingblock.LivingBlock;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.item.context.UseOnContext;
@@ -119,7 +119,7 @@ public class BeltFunnelBlock extends AbstractHorizontalFunnelBlock implements Sp
         BlockPos p_220071_3_,
         CollisionContext p_220071_4_
     ) {
-        if (p_220071_4_ instanceof EntityCollisionContext && ((EntityCollisionContext) p_220071_4_).getEntity() instanceof ItemEntity && (p_220071_1_.getValue(
+        if (p_220071_4_ instanceof EntityCollisionContext && ((EntityCollisionContext) p_220071_4_).getEntity() instanceof LivingBlock && (p_220071_1_.getValue(
             SHAPE) == Shape.PULLING || p_220071_1_.getValue(SHAPE) == Shape.PUSHING)) {
             return AllShapes.FUNNEL_COLLISION.get(getFacing(p_220071_1_));
         }
