@@ -16,6 +16,9 @@ import com.zurrtum.create.client.catnip.animation.AnimationTickHolder;
 import com.zurrtum.create.client.catnip.ghostblock.GhostBlocks;
 import com.zurrtum.create.client.catnip.outliner.Outliner;
 import com.zurrtum.create.client.catnip.render.DefaultSuperRenderTypeBuffer.Dispatcher;
+import com.zurrtum.create.client.catnip.render.EntityBlockLayer;
+import com.zurrtum.create.client.catnip.render.EntityBlockLightLayer;
+import com.zurrtum.create.client.catnip.render.EntityBlockMultipleLayer;
 import com.zurrtum.create.client.catnip.render.SuperRenderTypeBuffer;
 import com.zurrtum.create.client.content.contraptions.actors.seat.ContraptionPlayerPassengerRotation;
 import com.zurrtum.create.client.content.contraptions.minecart.CouplingRenderer;
@@ -28,15 +31,13 @@ import com.zurrtum.create.client.content.trains.track.TrackTargetingClient;
 import com.zurrtum.create.client.flywheel.api.visualization.VisualizationManager;
 import com.zurrtum.create.client.foundation.block.render.BlockDestructionProgressExtension;
 import com.zurrtum.create.client.foundation.block.render.MultiPosDestructionHandler;
-import com.zurrtum.create.client.infrastructure.model.WrapperBlockStateModel;
 import com.zurrtum.create.client.infrastructure.render.BreakingRenderStateInfo;
-import com.zurrtum.create.foundation.block.LightControlBlock;
+import com.zurrtum.create.content.decoration.copycat.CopycatBlock;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.LevelRenderer;
-import net.minecraft.client.renderer.LevelTargetBundle;
 import net.minecraft.client.renderer.MultiBufferSource.BufferSource;
 import net.minecraft.client.renderer.SubmitNodeStorage;
 import net.minecraft.client.renderer.block.BlockStateModelSet;
@@ -64,14 +65,12 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import java.util.Set;
 import java.util.SortedSet;
 
+import static com.zurrtum.create.client.infrastructure.model.WrapperBlockStateModel.getBlockDestroyModel;
+
 @Mixin(LevelRenderer.class)
 public abstract class LevelRendererMixin {
     @Shadow
     private ClientLevel level;
-
-    @Shadow
-    @Final
-    private LevelTargetBundle targets;
 
     @Shadow
     @Final
@@ -143,6 +142,15 @@ public abstract class LevelRendererMixin {
         ContraptionPlayerPassengerRotation.frame(minecraft);
     }
 
+    @Inject(method = "allChanged()V", at = @At("RETURN"))
+    private void flywheel$reload(CallbackInfo ci) {
+        if (level != null) {
+            EntityBlockLightLayer.clear();
+            EntityBlockLayer.clear();
+            EntityBlockMultipleLayer.clear();
+        }
+    }
+
     @Inject(method = "destroyBlockProgress(ILnet/minecraft/core/BlockPos;I)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/level/BlockDestructionProgress;updateTick(I)V"))
     private void onDestroyBlockProgress(
         int entityId,
@@ -209,7 +217,7 @@ public abstract class LevelRendererMixin {
         @Local(argsOnly = true) BlockAndLightGetter world,
         @Local(argsOnly = true) BlockPos pos
     ) {
-        if (state.getBlock() instanceof LightControlBlock block) {
+        if (state.getBlock() instanceof CopycatBlock block) {
             return block.getLuminance(world, pos);
         }
         return original.call(state);
@@ -241,14 +249,12 @@ public abstract class LevelRendererMixin {
     private <E> E addInfo(E e, @Share("models") LocalRef<BlockStateModelSet> ref) {
         BlockBreakingRenderState state = (BlockBreakingRenderState) e;
         BlockState blockState = state.blockState();
-        BlockStateModel model = ref.get().get(blockState);
-        if (WrapperBlockStateModel.unwrapCompat(model) instanceof WrapperBlockStateModel wrapper) {
-            Vec3 posVec = state.pos();
-            BlockPos pos = BlockPos.containing(posVec);
-            ClientLevel level = minecraft.level;
-            model = wrapper.extractRenderModel(level, pos, blockState, blockState.getSeed(pos));
-        }
-        ((BreakingRenderStateInfo) e).create$setRenderModel(model);
+        ((BreakingRenderStateInfo) e).create$setRenderModel(getBlockDestroyModel(
+            ref.get().get(blockState),
+            level,
+            state.blockPos(),
+            blockState
+        ));
         return e;
     }
 

@@ -2,7 +2,8 @@ package com.zurrtum.create.client.catnip.render;
 
 import com.mojang.blaze3d.vertex.QuadInstance;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import net.minecraft.client.renderer.block.BlockQuadOutput;
+import com.zurrtum.create.client.flywheel.lib.model.baked.BufferEmitter;
+import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
 import net.minecraft.client.resources.model.geometry.BakedQuad;
 import net.minecraft.client.resources.model.geometry.BakedQuad.MaterialInfo;
 import org.joml.Vector3f;
@@ -13,7 +14,7 @@ import org.jspecify.annotations.Nullable;
 
 import java.util.Arrays;
 
-public class EntityBlockSbbBuilder implements BlockQuadOutput {
+public class EntityBlockSbbBuilder implements BufferEmitter {
     private static final int INITIAL_CAPACITY = 256;
     protected final TemplateMeshBuffer[] buffers = new TemplateMeshBuffer[]{
         new TemplateMeshBuffer(EntityBlockRenderType.SOLID, INITIAL_CAPACITY),
@@ -25,15 +26,14 @@ public class EntityBlockSbbBuilder implements BlockQuadOutput {
     };
 
     @Override
+    public VertexConsumer getBuffer(boolean shade, ChunkSectionLayer layer) {
+        return buffers[shade ? layer.ordinal() : layer.ordinal() + 3];
+    }
+
+    @Override
     public void put(float x, float y, float z, BakedQuad quad, QuadInstance instance) {
         MaterialInfo info = quad.materialInfo();
-        buffers[info.shade() ? info.layer().ordinal() : info.layer().ordinal() + 3].putBlockBakedQuad(
-            x,
-            y,
-            z,
-            quad,
-            instance
-        );
+        getBuffer(info.shade(), info.layer()).putBlockBakedQuad(x, y, z, quad, instance);
     }
 
     public SuperByteBuffer build() {
@@ -118,23 +118,22 @@ public class EntityBlockSbbBuilder implements BlockQuadOutput {
             float nz
         ) {
             if (index == capacity) {
-                int size = capacity;
                 capacity <<= 1;
                 Vector4fc[] positions = this.positions;
                 this.positions = new Vector4fc[capacity];
-                System.arraycopy(positions, 0, this.positions, 0, size);
+                System.arraycopy(positions, 0, this.positions, 0, index);
                 int[] colors = this.colors;
                 this.colors = new int[capacity];
-                System.arraycopy(colors, 0, this.colors, 0, size);
+                System.arraycopy(colors, 0, this.colors, 0, index);
                 float[] uvs = this.uvs;
                 this.uvs = new float[capacity << 1];
                 System.arraycopy(uvs, 0, this.uvs, 0, capacity);
                 int[] lights = this.lights;
                 this.lights = new int[capacity];
-                System.arraycopy(lights, 0, this.lights, 0, size);
+                System.arraycopy(lights, 0, this.lights, 0, index);
                 Vector3fc[] normals = this.normals;
                 this.normals = new Vector3fc[capacity];
-                System.arraycopy(normals, 0, this.normals, 0, size);
+                System.arraycopy(normals, 0, this.normals, 0, index);
             }
             positions[index] = new Vector4f(x, y, z, 1);
             colors[index] = color;

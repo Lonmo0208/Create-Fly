@@ -7,11 +7,10 @@ import com.zurrtum.create.catnip.math.VecHelper;
 import com.zurrtum.create.catnip.registry.RegisteredObjectsHelper;
 import com.zurrtum.create.client.catnip.animation.AnimationTickHolder;
 import com.zurrtum.create.client.catnip.outliner.AABBOutline;
-import com.zurrtum.create.client.catnip.render.EntityBlockLevelSbbBuilder;
-import com.zurrtum.create.client.catnip.render.SuperByteBuffer;
-import com.zurrtum.create.client.catnip.render.SuperByteBufferCache;
+import com.zurrtum.create.client.catnip.render.*;
 import com.zurrtum.create.client.catnip.render.SuperByteBufferCache.Compartment;
-import com.zurrtum.create.client.catnip.render.SuperRenderTypeBuffer;
+import com.zurrtum.create.client.flywheel.lib.model.baked.ModelConsumer;
+import com.zurrtum.create.client.flywheel.lib.model.baked.ModelRenderHelper;
 import com.zurrtum.create.client.flywheel.lib.transform.TransformStack;
 import com.zurrtum.create.client.infrastructure.model.WrapperBlockStateModel;
 import com.zurrtum.create.client.ponder.Ponder;
@@ -26,7 +25,6 @@ import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.block.BlockModelLighter;
 import net.minecraft.client.renderer.block.BlockStateModelSet;
 import net.minecraft.client.renderer.block.FluidRenderer;
-import net.minecraft.client.renderer.block.ModelBlockRenderer;
 import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
@@ -377,9 +375,7 @@ public class WorldSectionElementImpl extends AnimatedSceneElementBase implements
             BlockState state = world.getBlockState(pos);
             BlockStateModel model = blockStateModelSet.get(state);
             long seed = state.getSeed(pos);
-            if (WrapperBlockStateModel.unwrapCompat(model) instanceof WrapperBlockStateModel wrapper) {
-                model = wrapper.extractRenderModel(world, pos, state, seed);
-            }
+            model = WrapperBlockStateModel.getBlockDestroyModel(model, world, pos, state, seed);
             queue.submitBreakingBlockModel(poseStack, model, seed, entry.getValue());
             poseStack.popPose();
         }
@@ -389,7 +385,7 @@ public class WorldSectionElementImpl extends AnimatedSceneElementBase implements
         if (redraw) {
             bufferCache.invalidate(PONDER_WORLD_SECTION, key);
         }
-        //        SodiumCompat.markPonderSpriteActive(world, section);
+        QuadRenderHelper.markFluidSpriteActive(world, section);
         bufferCache.get(PONDER_WORLD_SECTION, key, () -> buildStructureBuffer(world, modelManager))
             .light(lightCoordsFromFade(fade)).submit(poseStack, queue);
         poseStack.popPose();
@@ -481,9 +477,7 @@ public class WorldSectionElementImpl extends AnimatedSceneElementBase implements
         EntityBlockLevelSbbBuilder sbbBuilder = THREAD_LOCAL_OBJECTS.get();
         BlockStateModelSet blockStateModelSet = modelManager.getBlockStateModelSet();
         FluidRenderer fluidRenderer = new FluidRenderer(modelManager.getFluidStateModelSet());
-        Minecraft minecraft = Minecraft.getInstance();
-        boolean ambientOcclusion = minecraft.options.ambientOcclusion().get();
-        ModelBlockRenderer blockRenderer = new ModelBlockRenderer(ambientOcclusion, true, minecraft.getBlockColors());
+        ModelConsumer blockRenderer = ModelRenderHelper.getCullHelper(sbbBuilder);
 
         world.setMask(section);
         world.pushFakeLight(0);
@@ -498,7 +492,6 @@ public class WorldSectionElementImpl extends AnimatedSceneElementBase implements
             }
             if (state.getRenderShape() == RenderShape.MODEL) {
                 blockRenderer.tesselateBlock(
-                    sbbBuilder,
                     pos.getX(),
                     pos.getY(),
                     pos.getZ(),
