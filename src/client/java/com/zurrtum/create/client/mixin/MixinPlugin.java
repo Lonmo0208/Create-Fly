@@ -19,9 +19,9 @@ public class MixinPlugin implements IMixinConfigPlugin {
         if (loader.isModLoaded("sodium")) {
             mixins.add("QuadRenderHelperMixin");
         }
-        //        if (loader.isModLoaded("iris")) {
-        //            mixins.add("IrisPipelinesMixin");
-        //        }
+        if (loader.isModLoaded("iris")) {
+            mixins.add("IrisPipelinesMixin");
+        }
         //        if (loader.isModLoaded("eiv")) {
         //            mixins.add("ItemSlotMixin");
         //            mixins.add("FabricEIVMixin");
@@ -36,6 +36,7 @@ public class MixinPlugin implements IMixinConfigPlugin {
         }
         if (loader.isModLoaded("fabric-renderer-api-v1")) {
             mixins.add("WrapperBlockStateModelMixin");
+            mixins.add("WrapperBlockStateModelAccessor");
             mixins.add("CopycatModelMixin");
             mixins.add("CopycatStepModelMixin");
             mixins.add("CopycatPanelModelMixin");
